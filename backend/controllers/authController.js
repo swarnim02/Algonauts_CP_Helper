@@ -1,6 +1,10 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
+// Security constants for enhanced protection
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
+
 /**
  * @desc    Register a new user
  * @route   POST /api/auth/register
