@@ -14,11 +14,16 @@ const register = async (req, res) => {
     const { name, email, password, role } = req.body;
 
     try {
-        // Validate input types
+        // Validate input types with enhanced security
         if (!name || !email || !password || !role || 
             typeof name !== 'string' || typeof email !== 'string' || 
             typeof password !== 'string' || typeof role !== 'string') {
             return res.status(400).json({ message: 'Please provide all fields with valid data types' });
+        }
+
+        // Enhanced password validation
+        if (password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters long' });
         }
 
         // Check if user already exists
