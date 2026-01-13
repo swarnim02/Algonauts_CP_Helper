@@ -116,7 +116,7 @@ const logout = async (req, res) => {
 };
 
 /**
- * @desc    Get current user profile
+ * @desc    Get current user profile with enhanced data
  * @route   GET /api/auth/me
  * @access  Private
  */
@@ -127,7 +127,9 @@ const getMe = async (req, res) => {
             name: req.user.name,
             email: req.user.email,
             role: req.user.role,
-            groupIds: req.user.groupIds
+            groupIds: req.user.groupIds,
+            codeforcesHandle: req.user.codeforcesHandle,
+            createdAt: req.user.createdAt
         };
 
         res.status(200).json(user);
