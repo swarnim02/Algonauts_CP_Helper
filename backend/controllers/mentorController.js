@@ -7,6 +7,10 @@ const GroupProblemStatus = require('../models/GroupProblemStatus');
 const ProblemSet = require('../models/ProblemSet');
 const { parseProblemLink, validateProblemLink } = require('../utils/codeforcesAPI');
 
+// Performance optimization constants
+const BATCH_SIZE = 100;
+const CACHE_DURATION = 300000; // 5 minutes
+
 /**
  * @desc    Create a new group
  * @route   POST /api/mentor/create-group
