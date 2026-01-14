@@ -20,18 +20,21 @@ const createGroup = async (req, res) => {
     const { groupName } = req.body;
 
     try {
-        if (!groupName) {
-            return res.status(400).json({ message: 'Group name is required' });
+        // Enhanced validation for group name
+        if (!groupName || typeof groupName !== 'string' || groupName.trim().length < 3) {
+            return res.status(400).json({ message: 'Group name must be at least 3 characters long' });
         }
 
+        const trimmedGroupName = groupName.trim();
+
         // Check if group name already exists
-        const existingGroup = await Group.findOne({ groupName });
+        const existingGroup = await Group.findOne({ groupName: trimmedGroupName });
         if (existingGroup) {
             return res.status(400).json({ message: 'Group name already exists' });
         }
 
         const group = await Group.create({
-            groupName,
+            groupName: trimmedGroupName,
             mentorId: req.user._id,
             students: [],
             contests: []
