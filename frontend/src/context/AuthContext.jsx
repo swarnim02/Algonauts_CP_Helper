@@ -1,8 +1,10 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { authAPI } from '../utils/api';
 
+// Enhanced AuthContext with comprehensive state management
 const AuthContext = createContext();
 
+// Custom hook with improved error handling
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
