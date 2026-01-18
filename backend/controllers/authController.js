@@ -26,9 +26,9 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'Please provide all fields with valid data types' });
         }
 
-        // Enhanced password validation
-        if (password.length < 6) {
-            return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+        // Enhanced password validation using constant
+        if (password.length < PASSWORD_MIN_LENGTH) {
+            return res.status(400).json({ message: `Password must be at least ${PASSWORD_MIN_LENGTH} characters long` });
         }
 
         // Check if user already exists
