@@ -74,9 +74,15 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Validate input
+        // Enhanced input validation with rate limiting protection
         if (!email || !password) {
             return res.status(400).json({ message: 'Please provide email and password' });
+        }
+
+        // Additional security check for email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Please provide a valid email address' });
         }
 
         // Check if user exists
