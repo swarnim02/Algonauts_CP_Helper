@@ -78,6 +78,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         sessionTimeout,
+        loginAttempts,
         login,
         register,
         logout,
