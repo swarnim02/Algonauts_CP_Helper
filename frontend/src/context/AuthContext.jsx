@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
     const [sessionTimeout, setSessionTimeout] = useState(null);
     const [loginAttempts, setLoginAttempts] = useState(0);
-    const [sessionTimeout, setSessionTimeout] = useState(null);
 
     // Check if user is logged in on mount
     useEffect(() => {

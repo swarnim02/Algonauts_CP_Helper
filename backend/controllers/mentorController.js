@@ -12,10 +12,6 @@ const BATCH_SIZE = 100;
 const CACHE_DURATION = 300000; // 5 minutes
 const MAX_STUDENTS_PER_GROUP = 50;
 
-// Performance optimization constants
-const BATCH_SIZE = 100;
-const CACHE_DURATION = 300000; // 5 minutes
-
 /**
  * @desc    Create a new group
  * @route   POST /api/mentor/create-group
