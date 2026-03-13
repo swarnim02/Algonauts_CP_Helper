@@ -9,19 +9,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS - Allow all origins for development
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://cp-helper-rust.vercel.app');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    
-    if (req.method === 'OPTIONS') {
-        res.sendStatus(200);
-    } else {
-        next();
-    }
-});
+// ✅ CORS (correct way)
+app.use(cors({
+  origin: "https://cp-helper-rust.vercel.app",
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -39,6 +31,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/mentor', require('./routes/mentor'));
 app.use('/api/student', require('./routes/student'));
 
-app.listen(PORT, () => {
+// ✅ IMPORTANT for Render
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 });
