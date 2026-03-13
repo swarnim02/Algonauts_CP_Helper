@@ -9,10 +9,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ✅ CORS (correct way)
+// CORS
 app.use(cors({
-  origin: "https://cp-helper-rust.vercel.app",
-  credentials: true
+  origin: '*',
+  credentials: false
 }));
 
 app.use(express.json());
