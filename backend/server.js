@@ -9,11 +9,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS
-app.use(cors({
-  origin: '*',
-  credentials: false
-}));
+// CORS - Allow all origins for development
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173/');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -31,7 +39,6 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/mentor', require('./routes/mentor'));
 app.use('/api/student', require('./routes/student'));
 
-// ✅ IMPORTANT for Render
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-});
+}); this is the code tell me where to change
