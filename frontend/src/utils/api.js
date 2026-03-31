@@ -4,10 +4,17 @@ const API_URL = 'https://cp-helper-7mt6.onrender.com/api';
 
 const api = axios.create({
     baseURL: API_URL,
-    withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json'
     }
+});
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
 
 // Auth API

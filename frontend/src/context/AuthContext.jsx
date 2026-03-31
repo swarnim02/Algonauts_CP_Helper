@@ -1,10 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { authAPI } from '../utils/api';
 
-// Enhanced AuthContext with comprehensive state management
 const AuthContext = createContext();
 
-// Custom hook with improved error handling
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
@@ -17,10 +15,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [sessionTimeout, setSessionTimeout] = useState(null);
-    const [loginAttempts, setLoginAttempts] = useState(0);
 
-    // Check if user is logged in on mount
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -28,6 +23,7 @@ export const AuthProvider = ({ children }) => {
                 setUser(response.data);
             } catch (err) {
                 setUser(null);
+                localStorage.removeItem('token');
             } finally {
                 setLoading(false);
             }
@@ -41,6 +37,9 @@ export const AuthProvider = ({ children }) => {
             setError(null);
             const response = await authAPI.login({ email, password });
             setUser(response.data);
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            }
             return { success: true };
         } catch (err) {
             const message = err.response?.data?.message || 'Login failed';
@@ -54,6 +53,9 @@ export const AuthProvider = ({ children }) => {
             setError(null);
             const response = await authAPI.register({ name, email, password, role, codeforcesHandle });
             setUser(response.data);
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            }
             return { success: true };
         } catch (err) {
             const message = err.response?.data?.message || 'Registration failed';
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }) => {
             await authAPI.logout();
             setUser(null);
             setError(null);
+            localStorage.removeItem('token');
         } catch (err) {
             console.error('Logout error:', err);
         }
@@ -76,8 +79,6 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         error,
-        sessionTimeout,
-        loginAttempts,
         login,
         register,
         logout,

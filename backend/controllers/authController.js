@@ -1,59 +1,45 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
-// Security constants for enhanced protection
-const MAX_LOGIN_ATTEMPTS = 5;
-const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
-const PASSWORD_MIN_LENGTH = 6;
-
-/**
- * @desc    Register a new user
- * @route   POST /api/auth/register
- * @access  Public
- */
 const register = async (req, res) => {
     const { name, email, password, role } = req.body;
 
     try {
-        // Validate input types with enhanced security
         if (!name || !email || !password || !role || 
             typeof name !== 'string' || typeof email !== 'string' || 
             typeof password !== 'string' || typeof role !== 'string') {
             return res.status(400).json({ message: 'Please provide all fields with valid data types' });
         }
 
-        // Enhanced password validation using constant
-        if (password.length < PASSWORD_MIN_LENGTH) {
-            return res.status(400).json({ message: `Password must be at least ${PASSWORD_MIN_LENGTH} characters long` });
+        if (password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters long' });
         }
 
-        // Check if user already exists
         const userExists = await User.findOne({ email: email.toLowerCase().trim() });
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Validate role
         if (!['mentor', 'student'].includes(role)) {
             return res.status(400).json({ message: 'Invalid role' });
         }
 
-        // Create user
         const user = await User.create({
             name: name.trim(),
             email: email.toLowerCase().trim(),
-            password, // Will be hashed by pre-save hook
+            password,
             role,
             codeforcesHandle: req.body.codeforcesHandle ? req.body.codeforcesHandle.trim() : ''
         });
 
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
 
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            token
         });
     } catch (error) {
         console.error('Register error:', error.message);
@@ -61,46 +47,38 @@ const register = async (req, res) => {
     }
 };
 
-/**
- * @desc    Login user & get token
- * @route   POST /api/auth/login
- * @access  Public
- */
 const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Enhanced input validation with rate limiting protection
         if (!email || !password) {
             return res.status(400).json({ message: 'Please provide email and password' });
         }
 
-        // Additional security check for email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ message: 'Please provide a valid email address' });
         }
 
-        // Check if user exists
         const user = await User.findOne({ email: email.toLowerCase().trim() });
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Check password
         const isPasswordMatch = await user.matchPassword(password);
         if (!isPasswordMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
 
         res.status(200).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
-            groupIds: user.groupIds
+            groupIds: user.groupIds,
+            token
         });
     } catch (error) {
         console.error('Login error:', error.message);
@@ -108,11 +86,6 @@ const login = async (req, res) => {
     }
 };
 
-/**
- * @desc    Logout user & clear cookie
- * @route   POST /api/auth/logout
- * @access  Private
- */
 const logout = async (req, res) => {
     res.cookie('token', '', {
         httpOnly: true,
@@ -122,11 +95,6 @@ const logout = async (req, res) => {
     res.status(200).json({ message: 'Logged out successfully' });
 };
 
-/**
- * @desc    Get current user profile with enhanced data
- * @route   GET /api/auth/me
- * @access  Private
- */
 const getMe = async (req, res) => {
     try {
         const user = {
@@ -135,8 +103,7 @@ const getMe = async (req, res) => {
             email: req.user.email,
             role: req.user.role,
             groupIds: req.user.groupIds,
-            codeforcesHandle: req.user.codeforcesHandle,
-            createdAt: req.user.createdAt
+            codeforcesHandle: req.user.codeforcesHandle
         };
 
         res.status(200).json(user);
