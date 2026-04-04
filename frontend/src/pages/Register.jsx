@@ -58,6 +58,26 @@ const Register = () => {
 
     return (
         <div style={{ background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', minHeight: '100vh', position: 'relative' }}>
+            {/* Back to Home Button */}
+            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 10 }}>
+                <Link to="/" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1.5rem',
+                    background: 'rgba(26, 35, 50, 0.8)',
+                    border: '1px solid rgba(26, 115, 232, 0.3)',
+                    borderRadius: '8px',
+                    color: '#FFFFFF',
+                    textDecoration: 'none',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    backdropFilter: 'blur(10px)',
+                    transition: 'all 0.3s ease'
+                }}>
+                    ← Back to Home
+                </Link>
+            </div>
             {/* Static Background Elements */}
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
                 <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
