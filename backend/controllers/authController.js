@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const { checkPasswordStrength } = require('../utils/passwordChecker');
+const { validateEmail } = require('../utils/emailChecker');
 
 const register = async (req, res) => {
     const { name, email, password, role } = req.body;
@@ -10,6 +11,11 @@ const register = async (req, res) => {
             typeof name !== 'string' || typeof email !== 'string' || 
             typeof password !== 'string' || typeof role !== 'string') {
             return res.status(400).json({ message: 'Please provide all fields with valid data types' });
+        }
+
+        const emailCheck = validateEmail(email);
+        if (!emailCheck.isValid) {
+            return res.status(400).json({ message: 'Invalid email format' });
         }
 
         const passwordCheck = checkPasswordStrength(password);
