@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PasswordStrengthChecker from '../components/PasswordStrengthChecker';
 import '../App.css';
 
 const Register = () => {
@@ -116,6 +117,7 @@ const Register = () => {
                             required
                             placeholder="Create a password"
                         />
+                        <PasswordStrengthChecker password={formData.password} />
                     </div>
 
                     <div className="form-group">
