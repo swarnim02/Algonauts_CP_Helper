@@ -184,9 +184,39 @@ const StudentDashboard = () => {
     if (loading) return <div className="dashboard-container"><p>Loading...</p></div>;
 
     return (
-        <div className="dashboard-container">
-            <nav className="dashboard-nav">
-                <h2>Algonauts</h2>
+        <div style={{ 
+            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', 
+            minHeight: '100vh',
+            position: 'relative'
+        }}>
+            {/* Static Background Elements */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.1 }}>
+                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+            </div>
+            
+            <nav style={{
+                background: 'rgba(26, 35, 50, 0.9)',
+                backdropFilter: 'blur(20px)',
+                border: 'none',
+                borderBottom: '1px solid rgba(26, 115, 232, 0.3)',
+                padding: '1rem 2rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                position: 'relative',
+                zIndex: 10
+            }}>
+                <h2 style={{ 
+                    margin: 0, 
+                    color: '#FFFFFF',
+                    fontSize: '1.8rem',
+                    fontWeight: 'bold',
+                    background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                }}>Algonauts</h2>
                 <div className="nav-user" style={{ position: 'relative' }}>
                     <button 
                         onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -246,14 +276,20 @@ const StudentDashboard = () => {
                 </div>
             </nav>
 
-            <div className="dashboard-content">
-                <aside className="sidebar" style={{ background: 'rgba(0, 0, 0, 0.4)', borderRight: '1px solid rgba(255, 255, 255, 0.2)' }}>
+            <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', position: 'relative', zIndex: 1 }}>
+                <aside style={{ 
+                    width: '280px',
+                    background: 'rgba(26, 35, 50, 0.8)', 
+                    backdropFilter: 'blur(20px)',
+                    borderRight: '1px solid rgba(26, 115, 232, 0.3)',
+                    padding: '2rem 0'
+                }}>
                     <button
                         onClick={() => { setActiveTab('queue'); setSelectedContest(null); }}
                         style={{
-                            background: activeTab === 'queue' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                            borderLeft: activeTab === 'queue' ? '3px solid white' : '3px solid transparent',
-                            color: activeTab === 'queue' ? 'white' : '#aaa',
+                            background: activeTab === 'queue' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
+                            borderLeft: activeTab === 'queue' ? '3px solid #1A73E8' : '3px solid transparent',
+                            color: activeTab === 'queue' ? '#FFFFFF' : '#6B7280',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
                             border: 'none',
@@ -261,18 +297,19 @@ const StudentDashboard = () => {
                             width: '100%',
                             transition: 'all 0.3s ease',
                             fontSize: '1rem',
-                            fontWeight: activeTab === 'queue' ? 'bold' : 'normal'
+                            fontWeight: activeTab === 'queue' ? '600' : 'normal',
+                            borderRadius: activeTab === 'queue' ? '0 8px 8px 0' : '0'
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'queue') {
-                                e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                                e.target.style.color = 'white';
+                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
+                                e.target.style.color = '#FFFFFF';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'queue') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#aaa';
+                                e.target.style.color = '#6B7280';
                             }
                         }}
                     >
@@ -281,9 +318,9 @@ const StudentDashboard = () => {
                     <button
                         onClick={() => { setActiveTab('groups'); setSelectedContest(null); }}
                         style={{
-                            background: activeTab === 'groups' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                            borderLeft: activeTab === 'groups' ? '3px solid white' : '3px solid transparent',
-                            color: activeTab === 'groups' ? 'white' : '#aaa',
+                            background: activeTab === 'groups' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
+                            borderLeft: activeTab === 'groups' ? '3px solid #1A73E8' : '3px solid transparent',
+                            color: activeTab === 'groups' ? '#FFFFFF' : '#6B7280',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
                             border: 'none',
@@ -291,18 +328,19 @@ const StudentDashboard = () => {
                             width: '100%',
                             transition: 'all 0.3s ease',
                             fontSize: '1rem',
-                            fontWeight: activeTab === 'groups' ? 'bold' : 'normal'
+                            fontWeight: activeTab === 'groups' ? '600' : 'normal',
+                            borderRadius: activeTab === 'groups' ? '0 8px 8px 0' : '0'
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'groups') {
-                                e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                                e.target.style.color = 'white';
+                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
+                                e.target.style.color = '#FFFFFF';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'groups') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#aaa';
+                                e.target.style.color = '#6B7280';
                             }
                         }}
                     >
@@ -311,9 +349,9 @@ const StudentDashboard = () => {
                     <button
                         onClick={() => setActiveTab('contests')}
                         style={{
-                            background: activeTab === 'contests' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                            borderLeft: activeTab === 'contests' ? '3px solid white' : '3px solid transparent',
-                            color: activeTab === 'contests' ? 'white' : '#aaa',
+                            background: activeTab === 'contests' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
+                            borderLeft: activeTab === 'contests' ? '3px solid #1A73E8' : '3px solid transparent',
+                            color: activeTab === 'contests' ? '#FFFFFF' : '#6B7280',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
                             border: 'none',
@@ -321,18 +359,19 @@ const StudentDashboard = () => {
                             width: '100%',
                             transition: 'all 0.3s ease',
                             fontSize: '1rem',
-                            fontWeight: activeTab === 'contests' ? 'bold' : 'normal'
+                            fontWeight: activeTab === 'contests' ? '600' : 'normal',
+                            borderRadius: activeTab === 'contests' ? '0 8px 8px 0' : '0'
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'contests') {
-                                e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                                e.target.style.color = 'white';
+                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
+                                e.target.style.color = '#FFFFFF';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'contests') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#aaa';
+                                e.target.style.color = '#6B7280';
                             }
                         }}
                     >
@@ -342,9 +381,9 @@ const StudentDashboard = () => {
                     <button
                         onClick={() => setActiveTab('analytics')}
                         style={{
-                            background: activeTab === 'analytics' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                            borderLeft: activeTab === 'analytics' ? '3px solid white' : '3px solid transparent',
-                            color: activeTab === 'analytics' ? 'white' : '#aaa',
+                            background: activeTab === 'analytics' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
+                            borderLeft: activeTab === 'analytics' ? '3px solid #1A73E8' : '3px solid transparent',
+                            color: activeTab === 'analytics' ? '#FFFFFF' : '#6B7280',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
                             border: 'none',
@@ -352,18 +391,19 @@ const StudentDashboard = () => {
                             width: '100%',
                             transition: 'all 0.3s ease',
                             fontSize: '1rem',
-                            fontWeight: activeTab === 'analytics' ? 'bold' : 'normal'
+                            fontWeight: activeTab === 'analytics' ? '600' : 'normal',
+                            borderRadius: activeTab === 'analytics' ? '0 8px 8px 0' : '0'
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'analytics') {
-                                e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                                e.target.style.color = 'white';
+                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
+                                e.target.style.color = '#FFFFFF';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'analytics') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#aaa';
+                                e.target.style.color = '#6B7280';
                             }
                         }}
                     >
@@ -372,88 +412,154 @@ const StudentDashboard = () => {
 
                 </aside>
 
-                <main className="main-content">
+                <main style={{ 
+                    flex: 1, 
+                    padding: '2rem',
+                    background: 'rgba(13, 26, 51, 0.3)',
+                    backdropFilter: 'blur(10px)'
+                }}>
                     {activeTab === 'queue' && (
-                        <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                <h2 style={{ color: 'white' }}>Your Upsolve Queue</h2>
+                        <div style={{
+                            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)',
+                            borderRadius: '20px',
+                            padding: '2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            border: '1px solid rgba(26, 115, 232, 0.2)',
+                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                        }}>
+                            {/* Background Elements - Exactly like MainHome */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
+                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
+                            </div>
+                            
+                            {/* Pulsing Dots - Exactly like MainHome */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
+                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#1A73E8', borderRadius: '50%', top: '15%', left: '40%' }}></div>
+                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#28A8E0', borderRadius: '50%', top: '55%', left: '85%' }}></div>
+                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#1A73E8', borderRadius: '50%', top: '75%', left: '65%' }}></div>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', position: 'relative', zIndex: 1 }}>
+                                <h2 style={{ 
+                                    color: '#FFFFFF',
+                                    fontSize: '2.5rem',
+                                    fontWeight: '900',
+                                    margin: 0
+                                }}>Your Upsolve Queue</h2>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button
                                         id="fetch-status-btn"
-                                        className="btn btn-primary"
                                         onClick={handleFetchStatus}
-                                        style={{ background: 'white', color: '#000', fontWeight: 'bold' }}
+                                        style={{ 
+                                            background: 'rgba(255, 255, 255, 0.1)', 
+                                            color: '#FFFFFF', 
+                                            fontWeight: '700',
+                                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                                            padding: '1rem 2rem',
+                                            borderRadius: '15px',
+                                            cursor: 'pointer',
+                                            backdropFilter: 'blur(10px)',
+                                            transition: 'all 0.3s ease',
+                                            fontSize: '1rem'
+                                        }}
                                     >
                                         Fetch Current Status
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="stats-grid" style={{ marginBottom: '20px', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
-                                <div className="stat-card" style={{ 
-                                    padding: '15px', 
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginBottom: '20px', position: 'relative', zIndex: 1 }}>
+                                <div style={{ 
+                                    padding: '1.5rem', 
                                     textAlign: 'center',
-                                    background: 'rgba(255, 255, 255, 0.1)',
-                                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                                    borderRadius: '8px',
-                                    backdropFilter: 'blur(10px)'
+                                    background: 'rgba(26, 35, 50, 0.8)',
+                                    border: '1px solid rgba(26, 115, 232, 0.3)',
+                                    borderRadius: '12px',
+                                    backdropFilter: 'blur(20px)',
+                                    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)'
                                 }}>
-                                    <h4 style={{ fontSize: '0.8rem', color: '#aaa', margin: '0' }}>Contests Given</h4>
-                                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '5px 0', color: 'white' }}>{upsolveStats.contestGiven}</p>
+                                    <h4 style={{ fontSize: '0.9rem', color: '#6B7280', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Contests Given</h4>
+                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: '#FFFFFF' }}>{upsolveStats.contestGiven}</p>
                                 </div>
-                                <div className="stat-card" style={{ 
-                                    padding: '15px', 
+                                <div style={{ 
+                                    padding: '1.5rem', 
                                     textAlign: 'center', 
-                                    background: 'rgba(46, 204, 113, 0.2)',
-                                    border: '1px solid rgba(46, 204, 113, 0.5)',
-                                    borderRadius: '8px',
-                                    backdropFilter: 'blur(10px)'
+                                    background: 'rgba(26, 35, 50, 0.8)',
+                                    border: '1px solid rgba(34, 197, 94, 0.4)',
+                                    borderRadius: '12px',
+                                    backdropFilter: 'blur(20px)',
+                                    boxShadow: '0 8px 25px rgba(34, 197, 94, 0.1)'
                                 }}>
-                                    <h4 style={{ fontSize: '0.8rem', color: '#aaa', margin: '0' }}>Upsolve Done</h4>
-                                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '5px 0', color: '#2ecc71' }}>{upsolveStats.upsolveDone}</p>
+                                    <h4 style={{ fontSize: '0.9rem', color: '#6B7280', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Upsolve Done</h4>
+                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: '#22C55E' }}>{upsolveStats.upsolveDone}</p>
                                 </div>
-                                <div className="stat-card" style={{ 
-                                    padding: '15px', 
+                                <div style={{ 
+                                    padding: '1.5rem', 
                                     textAlign: 'center', 
-                                    background: 'rgba(230, 126, 34, 0.2)',
-                                    border: '1px solid rgba(230, 126, 34, 0.5)',
-                                    borderRadius: '8px',
-                                    backdropFilter: 'blur(10px)'
+                                    background: 'rgba(26, 35, 50, 0.8)',
+                                    border: '1px solid rgba(251, 146, 60, 0.4)',
+                                    borderRadius: '12px',
+                                    backdropFilter: 'blur(20px)',
+                                    boxShadow: '0 8px 25px rgba(251, 146, 60, 0.1)'
                                 }}>
-                                    <h4 style={{ fontSize: '0.8rem', color: '#aaa', margin: '0' }}>Upsolve Pending</h4>
-                                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '5px 0', color: '#e67e22' }}>{upsolveStats.upsolvePending}</p>
+                                    <h4 style={{ fontSize: '0.9rem', color: '#6B7280', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Upsolve Pending</h4>
+                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: '#FB923C' }}>{upsolveStats.upsolvePending}</p>
                                 </div>
                             </div>
 
                             {statusMessage && (
                                 <div style={{
-                                    padding: '10px',
-                                    margin: '10px 0',
-                                    borderRadius: '5px',
-                                    background: statusMessage.type === 'error' ? '#e74c3c' : (statusMessage.type === 'info' ? '#3498db' : '#2ecc71'),
-                                    color: '#fff',
-                                    fontSize: '0.9rem'
+                                    padding: '1rem',
+                                    margin: '1rem 0',
+                                    borderRadius: '8px',
+                                    background: statusMessage.type === 'error' ? 'rgba(239, 68, 68, 0.1)' : (statusMessage.type === 'info' ? 'rgba(26, 115, 232, 0.1)' : 'rgba(34, 197, 94, 0.1)'),
+                                    border: statusMessage.type === 'error' ? '1px solid rgba(239, 68, 68, 0.3)' : (statusMessage.type === 'info' ? '1px solid rgba(26, 115, 232, 0.3)' : '1px solid rgba(34, 197, 94, 0.3)'),
+                                    color: statusMessage.type === 'error' ? '#FCA5A5' : (statusMessage.type === 'info' ? '#93C5FD' : '#86EFAC'),
+                                    fontSize: '0.9rem',
+                                    backdropFilter: 'blur(10px)'
                                 }}>
                                     {statusMessage.text}
                                 </div>
                             )}
 
                             {upsolveQueue.length === 0 ? (
-                                <div className="empty-state">
-                                    <h3>All caught up!</h3>
-                                    <p>No pending problems in your queue. Click "Fetch Current Status" to sync with Codeforces.</p>
+                                <div style={{ 
+                                    textAlign: 'center', 
+                                    padding: '3rem', 
+                                    background: 'rgba(26, 35, 50, 0.6)', 
+                                    borderRadius: '16px',
+                                    border: '1px solid rgba(26, 115, 232, 0.2)',
+                                    backdropFilter: 'blur(20px)'
+                                }}>
+                                    <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>All caught up!</h3>
+                                    <p style={{ color: '#6B7280', margin: 0 }}>No pending problems in your queue. Click "Fetch Current Status" to sync with Codeforces.</p>
                                 </div>
                             ) : (
-                                <div className="queue-list">
+                                <div>
                                     {upsolveQueue.map((item, index) => (
-                                        <div key={item._id} className="queue-item" style={{ borderLeft: '4px solid white' }}>
-                                            <div className="queue-header">
-                                                <h3>
+                                        <div key={item._id} style={{ 
+                                            background: 'rgba(26, 35, 50, 0.8)',
+                                            border: '1px solid rgba(26, 115, 232, 0.3)',
+                                            borderLeft: '4px solid #1A73E8',
+                                            borderRadius: '12px',
+                                            padding: '1.5rem',
+                                            marginBottom: '1rem',
+                                            backdropFilter: 'blur(20px)',
+                                            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                            transition: 'all 0.3s ease'
+                                        }}>
+                                            <div>
+                                                <h3 style={{ margin: '0 0 1rem 0', color: '#FFFFFF', fontSize: '1.2rem' }}>
                                                     <a
                                                         href={item.link}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        style={{ color: 'inherit', textDecoration: 'none' }}
+                                                        style={{ color: '#FFFFFF', textDecoration: 'none', transition: 'color 0.3s ease' }}
+                                                        onMouseEnter={(e) => e.target.style.color = '#1A73E8'}
+                                                        onMouseLeave={(e) => e.target.style.color = '#FFFFFF'}
                                                     >
                                                         #{index + 1} - {item.contestName} - {item.problemIndex}
                                                     </a>
@@ -461,10 +567,10 @@ const StudentDashboard = () => {
                                             </div>
 
                                             {item.problemDetails && (
-                                                <div className="problem-details">
-                                                    <p><strong>Name:</strong> {item.problemDetails.name}</p>
-                                                    <p><strong>Rating:</strong> {item.problemDetails.rating}</p>
-                                                    <p><strong>Tags:</strong> {item.problemDetails.tags.join(', ') || 'None'}</p>
+                                                <div style={{ marginTop: '1rem' }}>
+                                                    <p style={{ margin: '0.5rem 0', color: '#FFFFFF' }}><strong>Name:</strong> <span style={{ color: '#6B7280' }}>{item.problemDetails.name}</span></p>
+                                                    <p style={{ margin: '0.5rem 0', color: '#FFFFFF' }}><strong>Rating:</strong> <span style={{ color: '#1A73E8', fontWeight: 'bold' }}>{item.problemDetails.rating}</span></p>
+                                                    <p style={{ margin: '0.5rem 0', color: '#FFFFFF' }}><strong>Tags:</strong> <span style={{ color: '#6B7280' }}>{item.problemDetails.tags.join(', ') || 'None'}</span></p>
                                                 </div>
                                             )}
                                         </div>
@@ -475,33 +581,89 @@ const StudentDashboard = () => {
                     )}
 
                     {activeTab === 'groups' && (
-                        <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                <h2 style={{ color: 'white' }}>Collaborative Groups</h2>
-                                <span className="status-badge" style={{ background: studentGroups.length > 0 ? 'white' : '#e74c3c', color: studentGroups.length > 0 ? '#000' : 'white', padding: '5px 15px', fontWeight: 'bold' }}>
+                        <div style={{
+                            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)',
+                            borderRadius: '20px',
+                            padding: '2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            border: '1px solid rgba(26, 115, 232, 0.2)',
+                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                        }}>
+                            {/* Background Elements - Gray theme only */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
+                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #6B7280 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #9CA3AF 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #6B7280 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #9CA3AF 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
+                            </div>
+                            
+                            {/* Pulsing Dots - Gray only */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
+                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#6B7280', borderRadius: '50%', top: '15%', left: '40%' }}></div>
+                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#9CA3AF', borderRadius: '50%', top: '55%', left: '85%' }}></div>
+                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#6B7280', borderRadius: '50%', top: '75%', left: '65%' }}></div>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', position: 'relative', zIndex: 1 }}>
+                                <h2 style={{ 
+                                    color: '#FFFFFF',
+                                    fontSize: '2.5rem',
+                                    fontWeight: '900',
+                                    margin: 0
+                                }}>Collaborative Groups</h2>
+                                <span style={{ 
+                                    background: studentGroups.length > 0 ? 'rgba(107, 114, 128, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
+                                    color: studentGroups.length > 0 ? '#9CA3AF' : '#FCA5A5', 
+                                    padding: '0.5rem 1rem', 
+                                    fontWeight: '700',
+                                    borderRadius: '8px',
+                                    border: studentGroups.length > 0 ? '1px solid rgba(107, 114, 128, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+                                    backdropFilter: 'blur(10px)'
+                                }}>
                                     {studentGroups.length} {studentGroups.length === 1 ? 'Group' : 'Groups'} assigned
                                 </span>
                             </div>
-                            <p style={{ color: '#aaa', marginBottom: '20px' }}>Problems assigned to you across all your collaborative groups.</p>
+                            <p style={{ color: '#6B7280', marginBottom: '20px', position: 'relative', zIndex: 1 }}>Problems assigned to you across all your collaborative groups.</p>
 
                             {studentGroups.length === 0 ? (
-                                <div className="empty-state" style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '15px' }}>
-                                    <h3 style={{ color: '#aaa' }}>You haven't been added to any group yet.</h3>
-                                    <p style={{ color: '#666' }}>Ask your mentor to add your email ({user?.email}) to a group.</p>
+                                <div style={{ 
+                                    textAlign: 'center', 
+                                    padding: '3rem', 
+                                    background: 'rgba(26, 35, 50, 0.6)', 
+                                    borderRadius: '16px',
+                                    border: '1px solid rgba(26, 115, 232, 0.2)',
+                                    backdropFilter: 'blur(20px)',
+                                    position: 'relative',
+                                    zIndex: 1
+                                }}>
+                                    <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>You haven't been added to any group yet.</h3>
+                                    <p style={{ color: '#6B7280', margin: 0 }}>Ask your mentor to add your email ({user?.email}) to a group.</p>
                                 </div>
                             ) : (
-                                <div>
+                                <div style={{ position: 'relative', zIndex: 1 }}>
                                     {!selectedGroup ? (
-                                        <div className="groups-list">
+                                        <div>
                                             {studentGroups.map(group => (
                                                 <div 
                                                     key={group.groupId} 
-                                                    className="queue-item" 
-                                                    style={{ cursor: 'pointer', marginBottom: '1rem', borderLeft: '4px solid white' }}
+                                                    style={{ 
+                                                        cursor: 'pointer', 
+                                                        marginBottom: '1rem', 
+                                                        background: 'rgba(55, 65, 81, 0.8)',
+                                                        border: '1px solid rgba(107, 114, 128, 0.3)',
+                                                        borderLeft: '4px solid #6B7280',
+                                                        borderRadius: '12px',
+                                                        padding: '1.5rem',
+                                                        backdropFilter: 'blur(20px)',
+                                                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                                        transition: 'all 0.3s ease'
+                                                    }}
                                                     onClick={() => setSelectedGroup(group)}
+                                                    onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                                                    onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                                                 >
-                                                    <h3 style={{ margin: 0, color: 'white' }}>{group.groupName}</h3>
-                                                    <p style={{ margin: '0.5rem 0 0 0', color: '#666' }}>
+                                                    <h3 style={{ margin: 0, color: '#FFFFFF', fontSize: '1.2rem' }}>{group.groupName}</h3>
+                                                    <p style={{ margin: '0.5rem 0 0 0', color: '#6B7280' }}>
                                                         {group.sets.length} problem sets
                                                     </p>
                                                 </div>
@@ -614,24 +776,53 @@ const StudentDashboard = () => {
                     )}
 
                     {activeTab === 'contests' && (
-                        <div>
+                        <div style={{
+                            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)',
+                            borderRadius: '20px',
+                            padding: '2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            border: '1px solid rgba(26, 115, 232, 0.2)',
+                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                        }}>
+                            {/* Background Elements - Blue theme */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
+                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
+                            </div>
+                            
+                            {/* Pulsing Dots - Blue */}
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
+                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#3B82F6', borderRadius: '50%', top: '15%', left: '40%' }}></div>
+                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#60A5FA', borderRadius: '50%', top: '55%', left: '85%' }}></div>
+                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#3B82F6', borderRadius: '50%', top: '75%', left: '65%' }}></div>
+                            </div>
                             {!selectedContest ? (
-                                <div>
-                                    <h2 style={{ color: 'white', marginBottom: '20px' }}>Contests</h2>
+                                <div style={{ position: 'relative', zIndex: 1 }}>
+                                    <h2 style={{ 
+                                        color: '#FFFFFF',
+                                        fontSize: '2.5rem',
+                                        fontWeight: '900',
+                                        margin: '0 0 20px 0'
+                                    }}>Contests</h2>
                                     <div style={{ display: 'flex', gap: '1rem', marginBottom: '20px' }}>
                                         {['upcoming', 'current', 'past'].map(tab => (
                                             <button
                                                 key={tab}
                                                 onClick={() => setContestTab(tab)}
                                                 style={{
-                                                    background: contestTab === tab ? 'white' : 'rgba(255, 255, 255, 0.1)',
-                                                    color: contestTab === tab ? '#000' : 'white',
-                                                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                                                    padding: '0.5rem 1rem',
-                                                    borderRadius: '6px',
+                                                    background: contestTab === tab ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                                                    color: contestTab === tab ? '#60A5FA' : '#FFFFFF',
+                                                    border: contestTab === tab ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid rgba(255, 255, 255, 0.2)',
+                                                    padding: '0.75rem 1.5rem',
+                                                    borderRadius: '8px',
                                                     cursor: 'pointer',
                                                     textTransform: 'capitalize',
-                                                    fontWeight: contestTab === tab ? 'bold' : 'normal'
+                                                    fontWeight: contestTab === tab ? '700' : '500',
+                                                    backdropFilter: 'blur(10px)',
+                                                    transition: 'all 0.3s ease'
                                                 }}
                                             >
                                                 {tab}
@@ -647,12 +838,19 @@ const StudentDashboard = () => {
                                         if (contestTab === 'past') return end < now;
                                         return false;
                                     }).length === 0 ? (
-                                        <div className="empty-state" style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '15px' }}>
-                                            <h3 style={{ color: '#aaa' }}>No {contestTab} contests</h3>
-                                            <p style={{ color: '#666' }}>Check back later for new contests.</p>
+                                        <div style={{ 
+                                            textAlign: 'center', 
+                                            padding: '3rem', 
+                                            background: 'rgba(26, 35, 50, 0.6)', 
+                                            borderRadius: '16px',
+                                            border: '1px solid rgba(59, 130, 246, 0.2)',
+                                            backdropFilter: 'blur(20px)'
+                                        }}>
+                                            <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>No {contestTab} contests</h3>
+                                            <p style={{ color: '#6B7280', margin: 0 }}>Check back later for new contests.</p>
                                         </div>
                                     ) : (
-                                        <div className="contests-list">
+                                        <div>
                                             {globalContests.filter(contest => {
                                                 const now = new Date();
                                                 const start = new Date(contest.startTime);
@@ -662,12 +860,22 @@ const StudentDashboard = () => {
                                                 if (contestTab === 'past') return end < now;
                                                 return false;
                                             }).map(contest => (
-                                                <div key={contest._id} className="queue-item" style={{ borderLeft: '4px solid white', marginBottom: '1rem' }}>
+                                                <div key={contest._id} style={{ 
+                                                    background: 'rgba(55, 65, 81, 0.8)',
+                                                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                                                    borderLeft: '4px solid #3B82F6',
+                                                    borderRadius: '12px',
+                                                    padding: '1.5rem',
+                                                    marginBottom: '1rem',
+                                                    backdropFilter: 'blur(20px)',
+                                                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                                    transition: 'all 0.3s ease'
+                                                }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                                         <div style={{ flex: 1 }}>
-                                                            <h3 style={{ margin: 0, color: 'white' }}>{contest.title}</h3>
-                                                            <p style={{ margin: '0.5rem 0', color: '#aaa' }}>{contest.description}</p>
-                                                            <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
+                                                            <h3 style={{ margin: 0, color: '#FFFFFF', fontSize: '1.2rem' }}>{contest.title}</h3>
+                                                            <p style={{ margin: '0.5rem 0', color: '#6B7280' }}>{contest.description}</p>
+                                                            <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem', fontSize: '0.9rem', color: '#6B7280' }}>
                                                                 <span>Start: {new Date(contest.startTime).toLocaleString()}</span>
                                                                 <span>End: {new Date(contest.endTime).toLocaleString()}</span>
                                                                 <span>{contest.problems.length} problems</span>

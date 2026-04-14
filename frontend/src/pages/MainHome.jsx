@@ -3,6 +3,44 @@ import '../App.css';
 
 const MainHome = () => {
     const [activeTab, setActiveTab] = useState('home');
+    const [contactForm, setContactForm] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
+    const [contactStatus, setContactStatus] = useState('');
+
+    const handleContactChange = (e) => {
+        setContactForm({
+            ...contactForm,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleContactSubmit = async (e) => {
+        e.preventDefault();
+        setContactStatus('sending');
+        
+        try {
+            const response = await fetch('http://localhost:3001/api/contact/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(contactForm)
+            });
+            
+            if (response.ok) {
+                setContactStatus('success');
+                setContactForm({ name: '', email: '', subject: '', message: '' });
+            } else {
+                setContactStatus('error');
+            }
+        } catch (error) {
+            setContactStatus('error');
+        }
+    };
 
     const renderContent = () => {
         switch (activeTab) {
@@ -261,27 +299,181 @@ const MainHome = () => {
                 );
             case 'contact':
                 return (
-                    <div style={{ padding: '3rem 2rem', maxWidth: '600px', margin: '0 auto', background: '#111111' }}>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '2rem', color: '#FFFFFF', textAlign: 'center' }}>Get In Touch</h2>
-                        <form className="form" style={{ background: '#1A2332', padding: '2rem', borderRadius: '8px', border: '1px solid #28A8E0' }}>
-                            <div className="form-group">
-                                <label style={{ color: '#FFFFFF' }}>Name</label>
-                                <input type="text" placeholder="Your name" style={{ background: '#0D1A33', color: '#FFFFFF', border: '1px solid #28A8E0', padding: '0.7rem', borderRadius: '6px' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', minHeight: '90vh', position: 'relative', overflow: 'hidden' }}>
+                        {/* Background Elements */}
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
+                            <div style={{ position: 'absolute', width: '300px', height: '300px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '10%', left: '10%' }}></div>
+                            <div style={{ position: 'absolute', width: '200px', height: '200px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', bottom: '20%', right: '15%' }}></div>
+                        </div>
+                        
+                        <div style={{ padding: '4rem 2rem', maxWidth: '700px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+                            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                                <h2 style={{ 
+                                    fontSize: '3rem', 
+                                    margin: '0 0 1rem 0',
+                                    color: '#FFFFFF',
+                                    fontWeight: 'bold',
+                                    background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent'
+                                }}>Get In Touch</h2>
+                                <p style={{ color: '#6B7280', fontSize: '1.1rem' }}>Have questions? We'd love to hear from you.</p>
                             </div>
-                            <div className="form-group">
-                                <label style={{ color: '#FFFFFF' }}>Email</label>
-                                <input type="email" placeholder="Your email" style={{ background: '#0D1A33', color: '#FFFFFF', border: '1px solid #28A8E0', padding: '0.7rem', borderRadius: '6px' }} />
-                            </div>
-                            <div className="form-group">
-                                <label style={{ color: '#FFFFFF' }}>Subject</label>
-                                <input type="text" placeholder="Subject" style={{ background: '#0D1A33', color: '#FFFFFF', border: '1px solid #28A8E0', padding: '0.7rem', borderRadius: '6px' }} />
-                            </div>
-                            <div className="form-group">
-                                <label style={{ color: '#FFFFFF' }}>Message</label>
-                                <textarea rows="5" placeholder="Your message" style={{ background: '#0D1A33', color: '#FFFFFF', border: '1px solid #28A8E0', padding: '0.7rem', borderRadius: '6px' }}></textarea>
-                            </div>
-                            <button type="submit" style={{ marginTop: '1rem', padding: '0.7rem 2rem', fontSize: '1rem', background: '#1A73E8', color: '#FFFFFF', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Send Message</button>
-                        </form>
+                            
+                            <form onSubmit={handleContactSubmit} style={{ 
+                                background: 'rgba(26, 35, 50, 0.8)', 
+                                padding: '3rem', 
+                                borderRadius: '16px', 
+                                border: '1px solid rgba(26, 115, 232, 0.3)',
+                                backdropFilter: 'blur(20px)',
+                                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                            }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                                    <div>
+                                        <label style={{ color: '#FFFFFF', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Name</label>
+                                        <input 
+                                            type="text" 
+                                            name="name"
+                                            value={contactForm.name}
+                                            onChange={handleContactChange}
+                                            placeholder="Your name" 
+                                            required
+                                            style={{ 
+                                                background: 'rgba(13, 26, 51, 0.8)', 
+                                                color: '#FFFFFF', 
+                                                border: '1px solid rgba(40, 168, 224, 0.3)', 
+                                                padding: '1rem', 
+                                                borderRadius: '8px',
+                                                width: '100%',
+                                                boxSizing: 'border-box',
+                                                fontSize: '1rem',
+                                                transition: 'border-color 0.3s ease'
+                                            }} 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ color: '#FFFFFF', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Email</label>
+                                        <input 
+                                            type="email" 
+                                            name="email"
+                                            value={contactForm.email}
+                                            onChange={handleContactChange}
+                                            placeholder="Your email" 
+                                            required
+                                            style={{ 
+                                                background: 'rgba(13, 26, 51, 0.8)', 
+                                                color: '#FFFFFF', 
+                                                border: '1px solid rgba(40, 168, 224, 0.3)', 
+                                                padding: '1rem', 
+                                                borderRadius: '8px',
+                                                width: '100%',
+                                                boxSizing: 'border-box',
+                                                fontSize: '1rem',
+                                                transition: 'border-color 0.3s ease'
+                                            }} 
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ color: '#FFFFFF', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Subject</label>
+                                    <input 
+                                        type="text" 
+                                        name="subject"
+                                        value={contactForm.subject}
+                                        onChange={handleContactChange}
+                                        placeholder="What's this about?" 
+                                        required
+                                        style={{ 
+                                            background: 'rgba(13, 26, 51, 0.8)', 
+                                            color: '#FFFFFF', 
+                                            border: '1px solid rgba(40, 168, 224, 0.3)', 
+                                            padding: '1rem', 
+                                            borderRadius: '8px',
+                                            width: '100%',
+                                            boxSizing: 'border-box',
+                                            fontSize: '1rem',
+                                            transition: 'border-color 0.3s ease'
+                                        }} 
+                                    />
+                                </div>
+                                
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <label style={{ color: '#FFFFFF', display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Message</label>
+                                    <textarea 
+                                        rows="6" 
+                                        name="message"
+                                        value={contactForm.message}
+                                        onChange={handleContactChange}
+                                        placeholder="Tell us more about your inquiry..." 
+                                        required
+                                        style={{ 
+                                            background: 'rgba(13, 26, 51, 0.8)', 
+                                            color: '#FFFFFF', 
+                                            border: '1px solid rgba(40, 168, 224, 0.3)', 
+                                            padding: '1rem', 
+                                            borderRadius: '8px',
+                                            width: '100%',
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            fontSize: '1rem',
+                                            fontFamily: 'inherit',
+                                            transition: 'border-color 0.3s ease'
+                                        }}
+                                    ></textarea>
+                                </div>
+                                
+                                <button 
+                                    type="submit" 
+                                    disabled={contactStatus === 'sending'}
+                                    style={{ 
+                                        padding: '1.2rem 2.5rem', 
+                                        fontSize: '1.1rem', 
+                                        background: contactStatus === 'sending' ? '#6B7280' : 'linear-gradient(45deg, #1A73E8, #28A8E0)', 
+                                        color: '#FFFFFF', 
+                                        border: 'none', 
+                                        borderRadius: '8px', 
+                                        fontWeight: 'bold', 
+                                        cursor: contactStatus === 'sending' ? 'not-allowed' : 'pointer',
+                                        width: '100%',
+                                        boxShadow: contactStatus === 'sending' ? 'none' : '0 8px 25px rgba(26, 115, 232, 0.4)',
+                                        transition: 'all 0.3s ease',
+                                        transform: 'translateY(0)'
+                                    }}
+                                >
+                                    {contactStatus === 'sending' ? 'Sending Message...' : 'Send Message'}
+                                </button>
+                                
+                                {contactStatus === 'success' && (
+                                    <div style={{ 
+                                        marginTop: '1.5rem', 
+                                        padding: '1rem', 
+                                        background: 'rgba(16, 185, 129, 0.2)', 
+                                        color: '#10B981', 
+                                        border: '1px solid rgba(16, 185, 129, 0.3)',
+                                        borderRadius: '8px', 
+                                        textAlign: 'center',
+                                        fontWeight: '600'
+                                    }}>
+                                        ✓ Message sent successfully! We'll get back to you soon.
+                                    </div>
+                                )}
+                                {contactStatus === 'error' && (
+                                    <div style={{ 
+                                        marginTop: '1.5rem', 
+                                        padding: '1rem', 
+                                        background: 'rgba(239, 68, 68, 0.2)', 
+                                        color: '#EF4444', 
+                                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                                        borderRadius: '8px', 
+                                        textAlign: 'center',
+                                        fontWeight: '600'
+                                    }}>
+                                        ✗ Failed to send message. Please try again.
+                                    </div>
+                                )}
+                            </form>
+                        </div>
                     </div>
                 );
             default:

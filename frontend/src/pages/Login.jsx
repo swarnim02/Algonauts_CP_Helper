@@ -6,6 +6,7 @@ import '../App.css';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('student');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -150,6 +151,34 @@ const Login = () => {
                                     backdropFilter: 'blur(10px)'
                                 }}
                             />
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', color: '#FFFFFF', marginBottom: '0.75rem', fontWeight: '500' }}>Login as</label>
+                            <div style={{ display: 'flex', gap: '1rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="student"
+                                        checked={role === 'student'}
+                                        onChange={(e) => setRole(e.target.value)}
+                                        style={{ accentColor: '#1A73E8' }}
+                                    />
+                                    Student
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="mentor"
+                                        checked={role === 'mentor'}
+                                        onChange={(e) => setRole(e.target.value)}
+                                        style={{ accentColor: '#1A73E8' }}
+                                    />
+                                    Teacher
+                                </label>
+                            </div>
                         </div>
 
                         <button
