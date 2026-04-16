@@ -182,26 +182,146 @@ const MainHome = () => {
                 );
             case 'about':
                 return (
-                    <div style={{ padding: '3rem 2rem', maxWidth: '900px', margin: '0 auto', background: '#111111' }}>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '2rem', color: '#FFFFFF' }}>About Algonauts</h2>
-                        <div style={{ display: 'grid', gap: '2rem' }}>
-                            <div style={{ background: '#1A2332', padding: '2rem', borderRadius: '8px', border: '1px solid #28A8E0' }}>
-                                <h3 style={{ color: '#FFFFFF', marginBottom: '1rem' }}>What is Algonauts?</h3>
-                                <p style={{ lineHeight: '1.8', color: '#6B7280' }}>Algonauts is a competitive programming club dedicated to helping students master algorithmic problem-solving. We provide structured guidance, mentorship, and tools to accelerate your journey in competitive programming.</p>
+                    <div style={{ background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', minHeight: '90vh', position: 'relative', overflow: 'hidden' }}>
+                        {/* Background Elements */}
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
+                            <div style={{ position: 'absolute', width: '350px', height: '350px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', right: '5%' }}></div>
+                            <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', bottom: '10%', left: '10%' }}></div>
+                            <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '40%', left: '70%' }}></div>
+                        </div>
+                        
+                        <div style={{ padding: '4rem 2rem', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+                            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                                <h2 style={{ 
+                                    fontSize: '3.5rem', 
+                                    margin: '0 0 1rem 0',
+                                    color: '#FFFFFF',
+                                    fontWeight: 'bold',
+                                    background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent'
+                                }}>About Algonauts</h2>
+                                <p style={{ color: '#6B7280', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>Empowering the next generation of competitive programmers</p>
                             </div>
-                            <div style={{ background: '#1A2332', padding: '2rem', borderRadius: '8px', border: '1px solid #28A8E0' }}>
-                                <h3 style={{ color: '#FFFFFF', marginBottom: '1rem' }}>Our Mission</h3>
-                                <p style={{ lineHeight: '1.8', color: '#6B7280' }}>To empower students with the knowledge, skills, and confidence needed to excel in competitive programming contests and technical interviews.</p>
+                            
+                            <div style={{ display: 'grid', gap: '2.5rem', marginBottom: '3rem' }}>
+                                <div style={{ 
+                                    background: 'rgba(26, 35, 50, 0.8)', 
+                                    padding: '3rem', 
+                                    borderRadius: '16px', 
+                                    border: '1px solid rgba(26, 115, 232, 0.3)',
+                                    backdropFilter: 'blur(20px)',
+                                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                                }}>
+                                    <h3 style={{ 
+                                        color: '#FFFFFF', 
+                                        marginBottom: '1.5rem', 
+                                        fontSize: '1.8rem',
+                                        fontWeight: '700'
+                                    }}>What is Algonauts?</h3>
+                                    <p style={{ 
+                                        lineHeight: '1.8', 
+                                        color: '#6B7280', 
+                                        fontSize: '1.1rem',
+                                        margin: 0
+                                    }}>Algonauts is a competitive programming club dedicated to helping students master algorithmic problem-solving. We provide structured guidance, mentorship, and tools to accelerate your journey in competitive programming.</p>
+                                </div>
+                                
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem' }}>
+                                    <div style={{ 
+                                        background: 'rgba(26, 35, 50, 0.8)', 
+                                        padding: '2.5rem', 
+                                        borderRadius: '16px', 
+                                        border: '1px solid rgba(26, 115, 232, 0.3)',
+                                        backdropFilter: 'blur(20px)',
+                                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                                    }}>
+                                        <h3 style={{ 
+                                            color: '#FFFFFF', 
+                                            marginBottom: '1.5rem', 
+                                            fontSize: '1.6rem',
+                                            fontWeight: '700'
+                                        }}>Our Mission</h3>
+                                        <p style={{ 
+                                            lineHeight: '1.8', 
+                                            color: '#6B7280', 
+                                            fontSize: '1rem',
+                                            margin: 0
+                                        }}>To empower students with the knowledge, skills, and confidence needed to excel in competitive programming contests and technical interviews.</p>
+                                    </div>
+                                    
+                                    <div style={{ 
+                                        background: 'rgba(26, 35, 50, 0.8)', 
+                                        padding: '2.5rem', 
+                                        borderRadius: '16px', 
+                                        border: '1px solid rgba(26, 115, 232, 0.3)',
+                                        backdropFilter: 'blur(20px)',
+                                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                                    }}>
+                                        <h3 style={{ 
+                                            color: '#FFFFFF', 
+                                            marginBottom: '1.5rem', 
+                                            fontSize: '1.6rem',
+                                            fontWeight: '700'
+                                        }}>Why Join Us?</h3>
+                                        <ul style={{ 
+                                            lineHeight: '1.8', 
+                                            color: '#6B7280', 
+                                            paddingLeft: '1.5rem',
+                                            margin: 0,
+                                            fontSize: '1rem'
+                                        }}>
+                                            <li style={{ marginBottom: '0.5rem' }}>Expert mentorship from experienced competitive programmers</li>
+                                            <li style={{ marginBottom: '0.5rem' }}>Structured problem-solving curriculum</li>
+                                            <li style={{ marginBottom: '0.5rem' }}>Smart upsolve queue to optimize your learning</li>
+                                            <li style={{ marginBottom: '0.5rem' }}>Real-time progress tracking and analytics</li>
+                                            <li>Community support and collaboration</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                            <div style={{ background: '#1A2332', padding: '2rem', borderRadius: '8px', border: '1px solid #28A8E0' }}>
-                                <h3 style={{ color: '#FFFFFF', marginBottom: '1rem' }}>Why Join Us?</h3>
-                                <ul style={{ lineHeight: '2', color: '#6B7280', paddingLeft: '1.5rem' }}>
-                                    <li>Expert mentorship from experienced competitive programmers</li>
-                                    <li>Structured problem-solving curriculum</li>
-                                    <li>Smart upsolve queue to optimize your learning</li>
-                                    <li>Real-time progress tracking and analytics</li>
-                                    <li>Community support and collaboration</li>
-                                </ul>
+                            
+                            {/* Call to Action */}
+                            <div style={{ textAlign: 'center', marginTop: '4rem' }}>
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <h3 style={{ 
+                                        color: '#FFFFFF', 
+                                        fontSize: '2rem', 
+                                        marginBottom: '1rem',
+                                        fontWeight: '700'
+                                    }}>Ready to Start Your Journey?</h3>
+                                    <p style={{ color: '#6B7280', fontSize: '1.1rem' }}>Join thousands of students already improving their competitive programming skills</p>
+                                </div>
+                                <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+                                    <a href="/register" style={{ 
+                                        padding: '1.2rem 2.5rem', 
+                                        fontSize: '1.1rem', 
+                                        background: 'linear-gradient(45deg, #1A73E8, #28A8E0)', 
+                                        color: 'white', 
+                                        border: 'none', 
+                                        borderRadius: '8px', 
+                                        fontWeight: 'bold', 
+                                        cursor: 'pointer', 
+                                        boxShadow: '0 8px 25px rgba(26, 115, 232, 0.4)',
+                                        transition: 'all 0.3s ease',
+                                        transform: 'translateY(0)',
+                                        textDecoration: 'none',
+                                        display: 'inline-block'
+                                    }}>Join Now</a>
+                                    <button onClick={() => setActiveTab('contact')} style={{ 
+                                        padding: '1.2rem 2.5rem', 
+                                        fontSize: '1.1rem', 
+                                        background: 'rgba(26, 115, 232, 0.1)', 
+                                        color: '#1A73E8', 
+                                        border: '2px solid #1A73E8', 
+                                        borderRadius: '8px', 
+                                        fontWeight: 'bold', 
+                                        cursor: 'pointer',
+                                        backdropFilter: 'blur(10px)',
+                                        transition: 'all 0.3s ease',
+                                        transform: 'translateY(0)'
+                                    }}>Contact Us</button>
+                                </div>
                             </div>
                         </div>
                     </div>
