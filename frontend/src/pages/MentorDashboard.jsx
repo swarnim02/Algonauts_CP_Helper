@@ -213,22 +213,48 @@ const MentorDashboard = () => {
     if (loading) return <div className="dashboard-container"><p>Loading...</p></div>;
 
     return (
-        <div className="dashboard-container">
-            <nav className="dashboard-nav" style={{
-                background: 'rgba(0, 0, 0, 0.3)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-                backdropFilter: 'blur(10px)',
+        <div style={{ 
+            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', 
+            minHeight: '100vh',
+            position: 'relative'
+        }}>
+            {/* Animated Background Elements */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
+                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%', animation: 'float 6s ease-in-out infinite' }}></div>
+                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%', animation: 'float 8s ease-in-out infinite reverse' }}></div>
+                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%', animation: 'float 7s ease-in-out infinite' }}></div>
+                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%', animation: 'float 9s ease-in-out infinite reverse' }}></div>
+            </div>
+            
+            {/* Pulsing Dots */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
+                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#1A73E8', borderRadius: '50%', top: '15%', left: '40%', animation: 'pulse 3s ease-in-out infinite' }}></div>
+                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#28A8E0', borderRadius: '50%', top: '55%', left: '85%', animation: 'pulse 4s ease-in-out infinite reverse' }}></div>
+                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#1A73E8', borderRadius: '50%', top: '75%', left: '65%', animation: 'pulse 3.5s ease-in-out infinite' }}></div>
+            </div>
+            
+            <nav style={{
+                background: 'rgba(26, 35, 50, 0.9)',
+                backdropFilter: 'blur(20px)',
+                border: 'none',
+                borderBottom: '1px solid rgba(26, 115, 232, 0.3)',
                 padding: '1rem 2rem',
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                position: 'relative',
+                zIndex: 10
             }}>
-                <div 
-                    onClick={handleLogoClick}
-                    style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'white', letterSpacing: '1px', cursor: 'pointer' }}
-                >
-                    Algonauts
-                </div>
+                <h2 style={{ 
+                    margin: 0, 
+                    color: '#FFFFFF',
+                    fontSize: '1.8rem',
+                    fontWeight: 'bold',
+                    background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    cursor: 'pointer'
+                }} onClick={handleLogoClick}>Algonauts</h2>
                 <div className="nav-user" style={{ position: 'relative' }}>
                     <button 
                         onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -254,15 +280,16 @@ const MentorDashboard = () => {
                             top: '100%',
                             right: 0,
                             marginTop: '0.5rem',
-                            background: 'rgba(0, 0, 0, 0.9)',
-                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            background: '#FFFFFF',
+                            border: '1px solid #E2E8F0',
+                            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
                             borderRadius: '6px',
                             minWidth: '200px',
                             zIndex: 1000,
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
                         }}>
                             <div style={{ padding: '0.5rem 0' }}>
-                                <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#aaa', fontSize: '0.9rem' }}>
+                                <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #E2E8F0', color: '#64748B', fontSize: '0.9rem' }}>
                                     {user?.email}
                                 </div>
                                 <button
@@ -271,13 +298,13 @@ const MentorDashboard = () => {
                                         width: '100%',
                                         background: 'transparent',
                                         border: 'none',
-                                        color: 'white',
+                                        color: '#334155',
                                         padding: '0.75rem 1rem',
                                         textAlign: 'left',
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease'
                                     }}
-                                    onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+                                    onMouseEnter={(e) => e.target.style.background = '#F1F5F9'}
                                     onMouseLeave={(e) => e.target.style.background = 'transparent'}
                                 >
                                     Logout
@@ -288,112 +315,271 @@ const MentorDashboard = () => {
                 </div>
             </nav>
 
-            <div className="dashboard-content">
-                <main className="main-content" style={{ width: '100%' }}>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+                <main style={{ padding: '2rem', background: 'rgba(13, 26, 51, 0.3)', backdropFilter: 'blur(10px)' }}>
                     {activeSection === 'main' && (
-                        <div className="animate-fade-in">
-                            <h1 style={{ color: 'white' }}>Welcome, {user?.name}!</h1>
-                            <p style={{ marginBottom: '3rem', color: '#aaa' }}>Choose a section to manage your groups and track student performance.</p>
+                        <div style={{
+                            textAlign: 'center', 
+                            padding: '4rem 2rem', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            minHeight: '80vh', 
+                            flexDirection: 'column'
+                        }}>
+                            <div style={{ marginBottom: '2rem' }}>
+                                <h1 style={{ 
+                                    fontSize: '4rem', 
+                                    margin: '0 0 1rem 0',
+                                    color: '#FFFFFF',
+                                    fontWeight: 'bold',
+                                    letterSpacing: '3px',
+                                    textShadow: '0 4px 20px rgba(26, 115, 232, 0.3)',
+                                    background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent'
+                                }}>Welcome, {user?.name}!</h1>
+                                <div style={{ width: '100px', height: '4px', background: 'linear-gradient(90deg, #1A73E8, #28A8E0)', margin: '0 auto', borderRadius: '2px' }}></div>
+                            </div>
                             
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                                <div 
-                                    className="queue-item" 
-                                    style={{ cursor: 'pointer', textAlign: 'center', padding: '2rem', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px', transition: 'all 0.3s ease' }}
-                                    onClick={() => setActiveSection('groups')}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                            <div style={{ marginBottom: '3rem' }}>
+                                <p style={{ fontSize: '1.4rem', color: '#FFFFFF', marginBottom: '1rem', fontWeight: '600', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Mentor Dashboard</p>
+                                <p style={{ fontSize: '1.1rem', color: '#6B7280', marginBottom: '0', maxWidth: '650px', lineHeight: '1.8', margin: '0 auto' }}>Manage your groups, track student progress, and create contests to guide your students' competitive programming journey.</p>
+                            </div>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2rem' }}>
+                                <div style={{ 
+                                    background: 'rgba(26, 35, 50, 0.8)', 
+                                    padding: '2rem', 
+                                    borderRadius: '12px', 
+                                    border: '1px solid rgba(26, 115, 232, 0.3)', 
+                                    backdropFilter: 'blur(10px)', 
+                                    textAlign: 'left', 
+                                    transition: 'transform 0.3s ease',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => setActiveSection('groups')}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
-                                    <h2 style={{ margin: '0 0 1rem 0', color: 'white' }}>Groups</h2>
-                                    <p style={{ color: '#aaa' }}>Create and manage groups, add students, assign problem sets</p>
+                                    <h3 style={{ color: '#FFFFFF', marginBottom: '0.5rem', fontSize: '1.3rem' }}>Groups</h3>
+                                    <p style={{ color: '#6B7280', lineHeight: '1.6', margin: 0 }}>Create and manage groups, add students, assign problem sets</p>
                                 </div>
-                                
-                                <div 
-                                    className="queue-item" 
-                                    style={{ cursor: 'pointer', textAlign: 'center', padding: '2rem', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px', transition: 'all 0.3s ease' }}
-                                    onClick={() => setActiveSection('performance')}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                                <div style={{ 
+                                    background: 'rgba(26, 35, 50, 0.8)', 
+                                    padding: '2rem', 
+                                    borderRadius: '12px', 
+                                    border: '1px solid rgba(26, 115, 232, 0.3)', 
+                                    backdropFilter: 'blur(10px)', 
+                                    textAlign: 'left', 
+                                    transition: 'transform 0.3s ease',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => setActiveSection('performance')}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
-                                    <h2 style={{ margin: '0 0 1rem 0', color: 'white' }}>Student Performance</h2>
-                                    <p style={{ color: '#aaa' }}>View detailed statistics and progress of students in your groups</p>
+                                    <h3 style={{ color: '#FFFFFF', marginBottom: '0.5rem', fontSize: '1.3rem' }}>Student Performance</h3>
+                                    <p style={{ color: '#6B7280', lineHeight: '1.6', margin: 0 }}>View detailed statistics and progress of students in your groups</p>
                                 </div>
-                                
-                                <div 
-                                    className="queue-item" 
-                                    style={{ cursor: 'pointer', textAlign: 'center', padding: '2rem', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px', transition: 'all 0.3s ease' }}
-                                    onClick={() => setActiveSection('contests')}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                                <div style={{ 
+                                    background: 'rgba(26, 35, 50, 0.8)', 
+                                    padding: '2rem', 
+                                    borderRadius: '12px', 
+                                    border: '1px solid rgba(26, 115, 232, 0.3)', 
+                                    backdropFilter: 'blur(10px)', 
+                                    textAlign: 'left', 
+                                    transition: 'transform 0.3s ease',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => setActiveSection('contests')}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
-                                    <h2 style={{ margin: '0 0 1rem 0', color: 'white' }}>Contests</h2>
-                                    <p style={{ color: '#aaa' }}>Schedule and manage contests for all students</p>
+                                    <h3 style={{ color: '#FFFFFF', marginBottom: '0.5rem', fontSize: '1.3rem' }}>Contests</h3>
+                                    <p style={{ color: '#6B7280', lineHeight: '1.6', margin: 0 }}>Schedule and manage contests for all students</p>
                                 </div>
                             </div>
                         </div>
                     )}
 
                     {activeSection === 'groups' && (
-                        <div className="animate-fade-in">
+                        <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
                             <div style={{ marginBottom: '2rem' }}>
                                 <button 
-                                    className="btn btn-secondary btn-sm" 
                                     onClick={() => setActiveSection('main')}
+                                    style={{
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        color: '#FFFFFF',
+                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '6px',
+                                        cursor: 'pointer',
+                                        fontSize: '0.9rem'
+                                    }}
                                 >
                                     ← Back to Main
                                 </button>
                             </div>
 
-                            <div className="dashboard-content" style={{ display: 'flex', gap: '2rem', minHeight: 'calc(100vh - 200px)' }}>
-                                <aside className="sidebar" style={{ minHeight: '100%' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 10px 10px' }}>
-                                        <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>GROUPS</h3>
-                                        <button className="btn btn-sm btn-secondary" onClick={() => {
-                                            setShowAddGroup(true);
-                                            setSelectedGroup(null);
-                                        }}>+</button>
+                            <div style={{ display: 'flex', gap: '1.5rem' }}>
+                                <aside style={{ 
+                                    width: '250px',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    borderRadius: '8px',
+                                    padding: '1rem',
+                                    height: 'fit-content'
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                        <h3 style={{ margin: 0, fontSize: '1rem', color: '#FFFFFF', fontWeight: '600' }}>Groups</h3>
+                                        <button 
+                                            onClick={() => {
+                                                setShowAddGroup(true);
+                                                setSelectedGroup(null);
+                                            }}
+                                            style={{
+                                                background: '#1A73E8',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '4px',
+                                                padding: '0.3rem 0.6rem',
+                                                cursor: 'pointer',
+                                                fontSize: '0.8rem'
+                                            }}
+                                        >
+                                            + Add
+                                        </button>
                                     </div>
                                     {groups.map(group => (
-                                        <button
+                                        <div
                                             key={group._id}
-                                            className={selectedGroup?._id === group._id ? 'active' : ''}
                                             onClick={() => {
                                                 setSelectedGroup(group);
                                                 setSelectedSet(null);
                                                 fetchSets(group._id);
                                                 setShowAddGroup(false);
                                             }}
+                                            style={{
+                                                padding: '0.75rem',
+                                                marginBottom: '0.5rem',
+                                                background: selectedGroup?._id === group._id ? 'rgba(26, 115, 232, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                                                border: selectedGroup?._id === group._id ? '1px solid #1A73E8' : '1px solid rgba(255, 255, 255, 0.1)',
+                                                borderRadius: '6px',
+                                                cursor: 'pointer',
+                                                color: '#FFFFFF',
+                                                fontSize: '0.9rem',
+                                                transition: 'all 0.2s ease'
+                                            }}
                                         >
                                             {group.groupName}
-                                        </button>
+                                        </div>
                                     ))}
                                 </aside>
 
-                                <main className="main-content">
+                                <main style={{ flex: 1 }}>
                                     {showAddGroup && (
-                                        <div className="animate-fade-in">
-                                            <h2 style={{ color: 'white' }}>Create New Group</h2>
-                                            <form onSubmit={handleCreateGroup} className="form" style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.2)', maxWidth: '500px' }}>
-                                                <div className="form-group">
-                                                    <label style={{ color: '#ccc', display: 'block', marginBottom: '0.5rem' }}>Group Name</label>
-                                                    <input value={newGroupName} onChange={e => setNewGroupName(e.target.value)} placeholder="e.g. Batch of 2025" required style={{ width: '100%', padding: '0.7rem', background: '#222', color: 'white', border: '1px solid #444', borderRadius: '6px', boxSizing: 'border-box' }} />
+                                        <div style={{
+                                            background: 'rgba(255, 255, 255, 0.05)',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            borderRadius: '8px',
+                                            padding: '2rem',
+                                            marginBottom: '2rem'
+                                        }}>
+                                            <h2 style={{ color: '#FFFFFF', marginBottom: '1.5rem', fontSize: '1.5rem' }}>Create New Group</h2>
+                                            <form onSubmit={handleCreateGroup} style={{ maxWidth: '400px' }}>
+                                                <div style={{ marginBottom: '1.5rem' }}>
+                                                    <label style={{ color: '#FFFFFF', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Group Name</label>
+                                                    <input 
+                                                        value={newGroupName} 
+                                                        onChange={e => setNewGroupName(e.target.value)} 
+                                                        placeholder="e.g. Batch of 2025" 
+                                                        required 
+                                                        style={{ 
+                                                            width: '100%', 
+                                                            padding: '0.75rem', 
+                                                            background: 'rgba(255, 255, 255, 0.1)', 
+                                                            color: '#FFFFFF', 
+                                                            border: '1px solid rgba(255, 255, 255, 0.2)', 
+                                                            borderRadius: '6px', 
+                                                            boxSizing: 'border-box',
+                                                            fontSize: '0.9rem'
+                                                        }} 
+                                                    />
                                                 </div>
-                                                <button type="submit" className="btn btn-primary" style={{ background: 'white', color: '#000', fontWeight: 'bold', padding: '0.7rem 1.5rem', marginTop: '1rem' }}>Create Group</button>
+                                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                                    <button 
+                                                        type="submit" 
+                                                        style={{ 
+                                                            background: '#1A73E8', 
+                                                            color: 'white', 
+                                                            border: 'none',
+                                                            padding: '0.75rem 1.5rem', 
+                                                            borderRadius: '6px',
+                                                            cursor: 'pointer',
+                                                            fontSize: '0.9rem'
+                                                        }}
+                                                    >
+                                                        Create Group
+                                                    </button>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => setShowAddGroup(false)}
+                                                        style={{ 
+                                                            background: 'rgba(255, 255, 255, 0.1)', 
+                                                            color: '#FFFFFF', 
+                                                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                                                            padding: '0.75rem 1.5rem', 
+                                                            borderRadius: '6px',
+                                                            cursor: 'pointer',
+                                                            fontSize: '0.9rem'
+                                                        }}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
                                             </form>
                                         </div>
                                     )}
 
                                     {!selectedGroup && !showAddGroup && (
-                                        <div className="empty-state">
-                                            <h3>Welcome, {user?.name}!</h3>
-                                            <p>Select a group from the sidebar to manage it or click '+' to create a new one.</p>
+                                        <div style={{
+                                            textAlign: 'center',
+                                            padding: '4rem 2rem',
+                                            background: 'rgba(255, 255, 255, 0.05)',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            borderRadius: '8px'
+                                        }}>
+                                            <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', marginBottom: '1rem' }}>Welcome, {user?.name}!</h3>
+                                            <p style={{ color: '#6B7280', fontSize: '1rem' }}>Select a group from the sidebar to manage it or click 'Add' to create a new one.</p>
                                         </div>
                                     )}
 
                                     {selectedGroup && (
-                                        <div className="animate-fade-in">
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                                                <h1 style={{ color: 'white' }}>{selectedGroup.groupName}</h1>
-                                                <button className="btn btn-secondary" onClick={() => setShowAddStudent(!showAddStudent)}>
+                                        <div>
+                                            <div style={{ 
+                                                display: 'flex', 
+                                                justifyContent: 'space-between', 
+                                                alignItems: 'center', 
+                                                marginBottom: '2rem',
+                                                padding: '1.5rem',
+                                                background: 'rgba(255, 255, 255, 0.05)',
+                                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                                borderRadius: '8px'
+                                            }}>
+                                                <h1 style={{ color: '#FFFFFF', margin: 0, fontSize: '1.8rem' }}>{selectedGroup.groupName}</h1>
+                                                <button 
+                                                    onClick={() => setShowAddStudent(!showAddStudent)}
+                                                    style={{
+                                                        background: showAddStudent ? 'rgba(239, 68, 68, 0.2)' : '#1A73E8',
+                                                        color: showAddStudent ? '#EF4444' : 'white',
+                                                        border: showAddStudent ? '1px solid #EF4444' : 'none',
+                                                        padding: '0.75rem 1.5rem',
+                                                        borderRadius: '6px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '0.9rem'
+                                                    }}
+                                                >
                                                     {showAddStudent ? 'Close' : 'Add Students'}
                                                 </button>
                                             </div>
@@ -1132,6 +1318,34 @@ const MentorDashboard = () => {
                     )}
                 </main>
             </div>
+            
+            <style jsx>{`
+                @keyframes float {
+                    0%, 100% {
+                        transform: translateY(0px) translateX(0px) rotate(0deg);
+                    }
+                    25% {
+                        transform: translateY(-30px) translateX(20px) rotate(90deg);
+                    }
+                    50% {
+                        transform: translateY(-10px) translateX(-15px) rotate(180deg);
+                    }
+                    75% {
+                        transform: translateY(20px) translateX(10px) rotate(270deg);
+                    }
+                }
+                
+                @keyframes pulse {
+                    0%, 100% {
+                        transform: scale(1);
+                        opacity: 0.3;
+                    }
+                    50% {
+                        transform: scale(1.5);
+                        opacity: 0.8;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
