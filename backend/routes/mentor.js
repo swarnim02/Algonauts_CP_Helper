@@ -8,6 +8,7 @@ const {
     createGlobalContest,
     getGlobalContests,
     updateGlobalContest,
+    deleteGlobalContest,
     viewStudentProgress,
     addGroupProblem,
     getGroupStats,
@@ -27,6 +28,7 @@ router.post('/create-contest/:groupId', createContest);
 router.post('/create-global-contest', createGlobalContest);
 router.get('/global-contests', getGlobalContests);
 router.put('/global-contests/:contestId', updateGlobalContest);
+router.delete('/global-contests/:contestId', deleteGlobalContest);
 router.get('/progress/:groupId/:contestId', viewStudentProgress);
 router.post('/group-problem/:groupId', addGroupProblem);
 router.get('/group-stats/:groupId', getGroupStats);

@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = 'https://cp-helper-7mt6.onrender.com/api';
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL:API_URL,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -34,6 +34,7 @@ export const mentorAPI = {
     createGlobalContest: (data) => api.post('/mentor/create-global-contest', data),
     getGlobalContests: () => api.get('/mentor/global-contests'),
     updateGlobalContest: (contestId, data) => api.put(`/mentor/global-contests/${contestId}`, data),
+    deleteGlobalContest: (contestId) => api.delete(`/mentor/global-contests/${contestId}`),
     getContestLeaderboard: (contestId) => api.get(`/student/contest-leaderboard/${contestId}`),
     viewProgress: (groupId, contestId) => api.get(`/mentor/progress/${groupId}/${contestId}`),
     addGroupProblem: (groupId, data) => api.post(`/mentor/group-problem/${groupId}`, data),

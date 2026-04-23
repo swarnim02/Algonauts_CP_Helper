@@ -566,6 +566,45 @@ const updateGlobalContest = async (req, res) => {
     }
 };
 
+/**
+ * @desc    Delete a global contest
+ * @route   DELETE /api/mentor/global-contests/:contestId
+ * @access  Private (Mentor only)
+ */
+const deleteGlobalContest = async (req, res) => {
+    const { contestId } = req.params;
+
+    try {
+        const contest = await Contest.findById(contestId);
+        if (!contest) {
+            return res.status(404).json({ message: 'Contest not found' });
+        }
+
+        // Verify mentor owns this contest
+        if (contest.mentorId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Not authorized to delete this contest' });
+        }
+
+        // Clean up related data if needed
+        // Remove contest from any groups that reference it
+        await Group.updateMany(
+            { contests: contestId },
+            { $pull: { contests: contestId } }
+        );
+
+        // Delete related problem statuses
+        await ProblemStatus.deleteMany({ contestId });
+
+        // Delete the contest
+        await Contest.findByIdAndDelete(contestId);
+        
+        res.status(200).json({ message: 'Contest deleted successfully' });
+    } catch (error) {
+        console.error('Delete contest error:', error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 module.exports = {
     createGroup,
     getMyGroups,
@@ -574,6 +613,7 @@ module.exports = {
     createGlobalContest,
     getGlobalContests,
     updateGlobalContest,
+    deleteGlobalContest,
     viewStudentProgress,
     addGroupProblem,
     getGroupStats,

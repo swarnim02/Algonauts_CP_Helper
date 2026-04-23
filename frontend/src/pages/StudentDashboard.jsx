@@ -26,7 +26,7 @@ const StudentDashboard = () => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [globalContests, setGlobalContests] = useState([]);
     const [selectedContest, setSelectedContest] = useState(null);
-    const [contestTab, setContestTab] = useState('upcoming');
+    const [contestTab, setContestTab] = useState('');
     const [leaderboard, setLeaderboard] = useState([]);
     const [cfHandle, setCfHandle] = useState('');
     const [cfLoading, setCfLoading] = useState(false);
@@ -73,6 +73,7 @@ const StudentDashboard = () => {
         try {
             const res = await studentAPI.getGlobalContests();
             setGlobalContests(res.data.contests || []);
+            // console.log(res.data)
         } catch (error) {
             console.error('Error fetching contests:', error);
         }
@@ -808,7 +809,7 @@ const StudentDashboard = () => {
                                         margin: '0 0 20px 0'
                                     }}>Contests</h2>
                                     <div style={{ display: 'flex', gap: '1rem', marginBottom: '20px' }}>
-                                        {['upcoming', 'current', 'past'].map(tab => (
+                                        {['Upcomming', 'current', 'past'].map(tab => (
                                             <button
                                                 key={tab}
                                                 onClick={() => setContestTab(tab)}
@@ -833,7 +834,7 @@ const StudentDashboard = () => {
                                         const now = new Date();
                                         const start = new Date(contest.startTime);
                                         const end = new Date(contest.endTime);
-                                        if (contestTab === 'upcoming') return start > now;
+                                        if (contestTab === '') return start > now;
                                         if (contestTab === 'current') return start <= now && end >= now;
                                         if (contestTab === 'past') return end < now;
                                         return false;
@@ -855,7 +856,7 @@ const StudentDashboard = () => {
                                                 const now = new Date();
                                                 const start = new Date(contest.startTime);
                                                 const end = new Date(contest.endTime);
-                                                if (contestTab === 'upcoming') return start > now;
+                                                if (contestTab === '') return start > now;
                                                 if (contestTab === 'current') return start <= now && end >= now;
                                                 if (contestTab === 'past') return end < now;
                                                 return false;
@@ -896,7 +897,7 @@ const StudentDashboard = () => {
                                                             >
                                                                 View
                                                             </button>
-                                                            {contestTab === 'upcoming' && (
+                                                            {contestTab === '' && (
                                                                 <button 
                                                                     className="btn btn-secondary btn-sm"
                                                                     onClick={() => handleRegisterContest(contest._id)}

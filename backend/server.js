@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // CORS
-const allowedOrigins = ['https://cp-helper-rust.vercel.app', 'http://localhost:5173', 'http://localhost:3000'];
+const allowedOrigins = ['https://cp-helper-rust.vercel.app', 'http://localhost:5173', 'http://localhost:3000',"http://localhost:5175"];
 app.use((req, res, next) => {
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
