@@ -23,7 +23,7 @@ const MainHome = () => {
         setContactStatus('sending');
         
         try {
-            const response = await fetch('http://localhost:3001/api/contact/submit', {
+            const response = await fetch('https://cp-helper-7mt6.onrender.com/api/contact/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
