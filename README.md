@@ -5,7 +5,7 @@ A production-ready Competitive Programming management platform for mentors and s
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v16+)
+- Node.js (v18+)
 - MongoDB Atlas account
 - Git
 
