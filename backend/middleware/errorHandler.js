@@ -1,23 +1,28 @@
-// Enhanced error handling middleware
+// Centralized error handling middleware
 
 const errorHandler = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message;
+    error.statusCode = err.statusCode;
 
-    // Log error for debugging
     console.error('Error:', err.message);
-    console.error('Stack:', err.stack);
+    if (process.env.NODE_ENV !== 'production') {
+        console.error('Stack:', err.stack);
+    }
+
+    // Rejected by the CORS origin whitelist
+    if (err.message && err.message.includes('is not allowed by CORS')) {
+        error = { message: 'Origin not allowed', statusCode: 403 };
+    }
 
     // Mongoose bad ObjectId
     if (err.name === 'CastError') {
-        const message = 'Resource not found';
-        error = { message, statusCode: 404 };
+        error = { message: 'Resource not found', statusCode: 404 };
     }
 
     // Mongoose duplicate key
     if (err.code === 11000) {
-        const message = 'Duplicate field value entered';
-        error = { message, statusCode: 400 };
+        error = { message: 'Duplicate field value entered', statusCode: 400 };
     }
 
     // Mongoose validation error
@@ -28,26 +33,27 @@ const errorHandler = (err, req, res, next) => {
 
     // JWT errors
     if (err.name === 'JsonWebTokenError') {
-        const message = 'Invalid token';
-        error = { message, statusCode: 401 };
+        error = { message: 'Invalid token', statusCode: 401 };
     }
 
     if (err.name === 'TokenExpiredError') {
-        const message = 'Token expired';
-        error = { message, statusCode: 401 };
+        error = { message: 'Token expired', statusCode: 401 };
     }
 
-    res.status(error.statusCode || 500).json({
+    // Fall back to any status already set on the response before defaulting to 500
+    const fallback = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+
+    res.status(error.statusCode || fallback).json({
         success: false,
         message: error.message || 'Server Error',
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
 };
 
-// 404 handler
+// 404 handler - forwards to errorHandler with an explicit status
 const notFound = (req, res, next) => {
     const error = new Error(`Not found - ${req.originalUrl}`);
-    res.status(404);
+    error.statusCode = 404;
     next(error);
 };
 
