@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://cp-helper-7mt6.onrender.com/api';
+// Configured via frontend/.env (see .env.example). Falls back to the local backend.
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const api = axios.create({
     baseURL:API_URL,
@@ -60,6 +61,16 @@ export const studentAPI = {
     getGlobalContests: () => api.get('/student/global-contests'),
     registerForContest: (contestId) => api.post(`/student/register-contest/${contestId}`),
     getContestLeaderboard: (contestId) => api.get(`/student/contest-leaderboard/${contestId}`)
+};
+
+// Codeforces Stats API
+export const codeforcesStatsAPI = {
+    analyzeStats: (handle) => api.get(`/codeforces-stats/analyze/${encodeURIComponent(handle)}`)
+};
+
+// Contact API
+export const contactAPI = {
+    submit: (data) => api.post('/contact/submit', data)
 };
 
 export default api;
