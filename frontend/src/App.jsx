@@ -5,6 +5,7 @@ import MainHome from './pages/MainHome';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import CodeforcesStats from './pages/CodeforcesStats';
 import MentorDashboard from './pages/MentorDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import './App.css';
@@ -19,6 +20,7 @@ function App() {
             <Route path="/cp-helper" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/codeforces-stats" element={<CodeforcesStats />} />
 
             {/* Dashboard router - redirects based on role */}
             <Route
