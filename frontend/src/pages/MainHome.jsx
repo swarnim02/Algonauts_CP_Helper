@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { contactAPI } from '../utils/api';
 import '../App.css';
 
 const MainHome = () => {
@@ -23,21 +24,10 @@ const MainHome = () => {
         setContactStatus('sending');
         
         try {
-            const response = await fetch('https://cp-helper-7mt6.onrender.com/api/contact/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(contactForm)
-            });
-            
-            if (response.ok) {
-                setContactStatus('success');
-                setContactForm({ name: '', email: '', subject: '', message: '' });
-            } else {
-                setContactStatus('error');
-            }
-        } catch (error) {
+            await contactAPI.submit(contactForm);
+            setContactStatus('success');
+            setContactForm({ name: '', email: '', subject: '', message: '' });
+        } catch {
             setContactStatus('error');
         }
     };
