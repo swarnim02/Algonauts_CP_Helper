@@ -282,7 +282,6 @@ const MentorDashboard = () => {
                             marginTop: '0.5rem',
                             background: '#FFFFFF',
                             border: '1px solid #E2E8F0',
-                            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
                             borderRadius: '6px',
                             minWidth: '200px',
                             zIndex: 1000,
