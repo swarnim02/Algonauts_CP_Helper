@@ -41,7 +41,7 @@ export default function CodeforcesStats() {
                     placeholder="Enter Codeforces handle"
                     value={handle}
                     onChange={(e) => setHandle(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
                 />
                 <button onClick={handleAnalyze} disabled={loading}>
                     {loading ? 'Analyzing...' : 'Analyze'}
