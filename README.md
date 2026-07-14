@@ -53,7 +53,13 @@ cd Algonauts_CP_Helper
    npm install
    ```
 
-3. Start development server:
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   `VITE_API_URL` defaults to the local backend; point it at your deployed API for production builds.
+
+4. Start development server:
    ```bash
    npm run dev
    ```
@@ -81,6 +87,7 @@ Algonauts_CP_Helper/
 │   │   ├── pages/       # Page components
 │   │   ├── utils/       # API helpers
 │   │   └── main.jsx     # Entry point
+│   ├── .env.example     # Environment variables template
 │   ├── package.json     # Dependencies
 │   └── vite.config.js   # Vite configuration
 └── README.md
@@ -88,7 +95,7 @@ Algonauts_CP_Helper/
 
 ## 🔧 Tech Stack
 
-- **Frontend**: React 18, Vite, React Router, Axios
+- **Frontend**: React 19, Vite, React Router, Axios
 - **Backend**: Node.js, Express, JWT, Mongoose
 - **Database**: MongoDB (Atlas)
 - **External API**: Codeforces API
@@ -117,12 +124,21 @@ Algonauts_CP_Helper/
 
 ## 🔐 Environment Variables
 
-### Backend (.env)
+### Backend (`backend/.env`)
 ```
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_secure_random_string
 PORT=3001
+CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+NODE_ENV=development
 ```
+The server exits at startup if `MONGODB_URI` or `JWT_SECRET` is missing.
+
+### Frontend (`frontend/.env`)
+```
+VITE_API_URL=http://localhost:3001/api
+```
+Defaults to `http://localhost:3001/api` when unset.
 
 ## 🚀 Running the Project
 
@@ -161,6 +177,12 @@ After setup, create accounts through the registration page:
 - `POST /api/mentor/add-students/:groupId` - Add students to group
 - `POST /api/mentor/create-contest/:groupId` - Create contest
 - `GET /api/mentor/group-stats/:groupId` - Get group statistics
+
+### Codeforces Stats
+- `GET /api/codeforces-stats/analyze/:handle` - Contest participation and upsolve analysis
+
+### Health
+- `GET /health` - Liveness probe
 
 ### Student Routes
 - `GET /api/student/upsolve-queue` - Get upsolve queue
