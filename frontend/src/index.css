@@ -1,37 +1,257 @@
+/* ==========================================================================
+   Algonauts CP Helper — Design Tokens
+   Every colour, space, radius and shadow in the app resolves to a token
+   defined here. Change a value once and it propagates everywhere.
+   ========================================================================== */
+
 :root {
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --secondary: #ec4899;
-  --bg-dark: #0f172a;
-  --bg-card: #1e293b;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: #334155;
-  --success: #22c55e;
-  --warning: #eab308;
-  --danger: #ef4444;
+  /* ---- Surfaces ------------------------------------------------------- */
+  --bg-deep: #0a0f0d;
+  --bg: #0d1411;
+  --bg-panel: #121a17;
+  --bg-elevated: #18231f;
+  --bg-hover: #1e2c26;
+  --bg-input: #0f1714;
+
+  /* ---- Borders -------------------------------------------------------- */
+  --border: #1f2e28;
+  --border-strong: #2a3d35;
+  --border-focus: #10b981;
+
+  /* ---- Brand ---------------------------------------------------------- */
+  --primary: #10b981;
+  --primary-hover: #34d399;
+  --primary-active: #059669;
+  --primary-contrast: #04120d;
+  --primary-soft: rgba(16, 185, 129, 0.12);
+  --primary-softer: rgba(16, 185, 129, 0.06);
+  --primary-glow: rgba(16, 185, 129, 0.28);
+
+  --accent: #5eead4;
+  --accent-soft: rgba(94, 234, 212, 0.12);
+
+  /* ---- Text ----------------------------------------------------------- */
+  --text: #ecfdf5;
+  --text-2: #b8cfc6;
+  --muted: #8aa39b;
+  --faint: #5c716a;
+
+  /* ---- Status --------------------------------------------------------- */
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.12);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.12);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --info: #38bdf8;
+  --info-soft: rgba(56, 189, 248, 0.12);
+
+  /* ---- Codeforces rating tiers (used by charts) ----------------------- */
+  --cf-newbie: #9aa4a0;
+  --cf-pupil: #7ddf64;
+  --cf-specialist: #5eead4;
+  --cf-expert: #60a5fa;
+  --cf-candidate: #c084fc;
+  --cf-master: #fbbf24;
+  --cf-grandmaster: #f87171;
+
+  /* ---- Glass ---------------------------------------------------------- */
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-strong: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  /* ---- Scrims & heat ramp --------------------------------------------- */
+  --scrim-nav: rgba(10, 15, 13, 0.82);
+  --scrim-modal: rgba(4, 8, 6, 0.72);
+  --heat-1: #0f5b45;
+  --heat-2: #128764;
+
+  /* ---- Gradients ------------------------------------------------------ */
+  --grad-page: linear-gradient(160deg, #0a0f0d 0%, #0e1a15 55%, #0a1512 100%);
+  --grad-brand: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  --grad-text: linear-gradient(120deg, var(--text) 0%, var(--accent) 60%, var(--primary) 100%);
+
+  /* ---- Spacing scale -------------------------------------------------- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+
+  /* ---- Radius --------------------------------------------------------- */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-full: 999px;
+
+  /* ---- Shadows -------------------------------------------------------- */
+  --shadow-color: rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 0 1px var(--primary-soft), 0 8px 32px var(--primary-glow);
+
+  /* ---- Typography ----------------------------------------------------- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2.25rem;
+  --fs-4xl: 3rem;
+
+  --lh-tight: 1.2;
+  --lh-normal: 1.6;
+
+  /* ---- Motion --------------------------------------------------------- */
+  --t-fast: 120ms ease;
+  --t-base: 200ms ease;
+  --t-slow: 360ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---- Layout --------------------------------------------------------- */
+  --container: 1200px;
+  --nav-h: 68px;
 }
 
-* {
+/* ==========================================================================
+   Reset & base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 a {
+  color: var(--primary);
   text-decoration: none;
-  color: inherit;
+  transition: color var(--t-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
 }
 
 button {
   cursor: pointer;
   border: none;
   font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ---- Headings: monospace gives the tool a terminal register ----------- */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+h1 { font-size: var(--fs-3xl); }
+h2 { font-size: var(--fs-2xl); }
+h3 { font-size: var(--fs-xl); }
+h4 { font-size: var(--fs-lg); }
+
+p {
+  color: var(--text-2);
+}
+
+code,
+pre,
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ---- Focus: one visible, consistent ring everywhere ------------------- */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ---- Scrollbar -------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--r-full);
+  border: 2px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--faint);
+}
+
+::selection {
+  background: var(--primary-soft);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
