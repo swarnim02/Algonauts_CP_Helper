@@ -1,32 +1,23 @@
 import React from 'react';
 
-const EmailChecker = ({ email }) => {
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isValid = emailRegex.test(email);
-        
-        const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'edu'];
-        const domain = email.split('@')[1]?.toLowerCase();
-        const isCommonDomain = commonDomains.some(d => domain?.includes(d));
-        
-        return { isValid, isCommonDomain };
-    };
+const COMMON_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'edu'];
 
+const EmailChecker = ({ email }) => {
     if (!email) return null;
 
-    const { isValid, isCommonDomain } = validateEmail(email);
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const domain = email.split('@')[1]?.toLowerCase();
+    const isCommonDomain = COMMON_DOMAINS.some((d) => domain?.includes(d));
 
     return (
-        <div style={{ marginTop: '0.5rem', fontSize: '0.8rem' }}>
+        <div className="field-feedback">
             {isValid ? (
-                <span style={{ color: '#2ecc71' }}>✓ Valid email</span>
+                <span className="field-ok">✓ Valid email</span>
             ) : (
-                <span style={{ color: '#e74c3c' }}>✗ Invalid email format</span>
+                <span className="field-bad">✗ Invalid email format</span>
             )}
             {isValid && !isCommonDomain && (
-                <div style={{ color: '#f39c12', marginTop: '0.25rem' }}>
-                    ⚠ Uncommon domain - double check spelling
-                </div>
+                <span className="field-warn">⚠ Uncommon domain — double-check the spelling</span>
             )}
         </div>
     );
