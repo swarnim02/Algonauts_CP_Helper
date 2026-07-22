@@ -16,14 +16,14 @@ const StatsCards = ({ userData, ratingHistory }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
             {stats.map((stat, index) => (
                 <div key={index} style={{ 
-                    background: 'rgba(255, 255, 255, 0.1)', 
+                    background: 'var(--glass)', 
                     padding: '1.5rem', 
                     borderRadius: '8px', 
-                    border: '1px solid rgba(255, 255, 255, 0.2)', 
+                    border: '1px solid var(--glass-strong)', 
                     backdropFilter: 'blur(10px)',
                     textAlign: 'center'
                 }}>
-                    <h4 style={{ color: '#aaa', margin: '0 0 0.5rem 0', fontSize: '0.9rem' }}>{stat.label}</h4>
+                    <h4 style={{ color: 'var(--muted)', margin: '0 0 0.5rem 0', fontSize: '0.9rem' }}>{stat.label}</h4>
                     <p style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>{stat.value}</p>
                 </div>
             ))}
