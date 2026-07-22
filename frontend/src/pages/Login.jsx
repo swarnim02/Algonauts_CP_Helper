@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import '../App.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('student');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -30,201 +29,61 @@ const Login = () => {
     };
 
     return (
-        <div style={{ background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', minHeight: '100vh', position: 'relative' }}>
-            {/* Back to Home Button */}
-            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 10 }}>
-                <Link to="/" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem 1.5rem',
-                    background: 'rgba(26, 35, 50, 0.8)',
-                    border: '1px solid rgba(26, 115, 232, 0.3)',
-                    borderRadius: '8px',
-                    color: '#FFFFFF',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                    fontWeight: '500',
-                    backdropFilter: 'blur(10px)',
-                    transition: 'all 0.3s ease'
-                }}>
-                    ← Back to Home
-                </Link>
-            </div>
-            {/* Static Background Elements */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
-                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
-                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
-                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
-                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
-            </div>
-            
-            {/* Static Dots */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
-                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#1A73E8', borderRadius: '50%', top: '15%', left: '40%' }}></div>
-                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#28A8E0', borderRadius: '50%', top: '55%', left: '85%' }}></div>
-                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#1A73E8', borderRadius: '50%', top: '75%', left: '65%' }}></div>
-            </div>
-            
-            {/* Login Form */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '2rem', position: 'relative', zIndex: 1 }}>
-                <div style={{ 
-                    background: 'rgba(26, 35, 50, 0.9)', 
-                    padding: '3rem', 
-                    borderRadius: '16px', 
-                    border: '1px solid rgba(26, 115, 232, 0.3)', 
-                    backdropFilter: 'blur(20px)',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-                    width: '100%',
-                    maxWidth: '450px'
-                }}>
-                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                        <h1 style={{ 
-                            fontSize: '2.5rem', 
-                            margin: '0 0 0.5rem 0',
-                            color: '#FFFFFF',
-                            fontWeight: 'bold',
-                            background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent'
-                        }}>Welcome Back</h1>
-                        <p style={{ color: '#6B7280', fontSize: '1.1rem', margin: 0 }}>Sign in to continue to Algonauts</p>
-                        <div style={{ width: '60px', height: '3px', background: 'linear-gradient(90deg, #1A73E8, #28A8E0)', margin: '1rem auto', borderRadius: '2px' }}></div>
+        <div className="auth-container">
+            <Link to="/" className="btn btn-ghost btn-sm auth-back">
+                ← Back to home
+            </Link>
+
+            <div className="auth-card animate-fade-in">
+                <div className="auth-header">
+                    <div className="brand" style={{ justifyContent: 'center', marginBottom: 'var(--sp-5)' }}>
+                        <span className="brand-mark">A</span>
+                        <span>Algonauts</span>
+                    </div>
+                    <h1>Welcome back</h1>
+                    <p>Sign in to continue to your dashboard</p>
+                </div>
+
+                {error && <div className="error-message" role="alert">{error}</div>}
+
+                <form onSubmit={handleSubmit} className="auth-form">
+                    <div className="form-group">
+                        <label className="label" htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            className="form-control"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                            placeholder="you@example.com"
+                        />
                     </div>
 
-                    {error && (
-                        <div style={{ 
-                            background: 'rgba(239, 68, 68, 0.1)', 
-                            border: '1px solid rgba(239, 68, 68, 0.3)', 
-                            color: '#FCA5A5', 
-                            padding: '0.75rem', 
-                            borderRadius: '8px', 
-                            marginBottom: '1.5rem',
-                            fontSize: '0.9rem'
-                        }}>
-                            {error}
-                        </div>
-                    )}
+                    <div className="form-group">
+                        <label className="label" htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            className="form-control"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            autoComplete="current-password"
+                            placeholder="Enter your password"
+                        />
+                    </div>
 
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <div>
-                            <label htmlFor="email" style={{ display: 'block', color: '#FFFFFF', marginBottom: '0.5rem', fontWeight: '500' }}>Email</label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder="Enter your email"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.875rem',
-                                    background: 'rgba(13, 26, 51, 0.8)',
-                                    border: '1px solid rgba(26, 115, 232, 0.3)',
-                                    borderRadius: '8px',
-                                    color: '#FFFFFF',
-                                    fontSize: '1rem',
-                                    transition: 'all 0.3s ease',
-                                    backdropFilter: 'blur(10px)'
-                                }}
-                            />
-                        </div>
+                    <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={loading}>
+                        {loading ? 'Signing in…' : 'Sign in'}
+                    </button>
+                </form>
 
-                        <div>
-                            <label htmlFor="password" style={{ display: 'block', color: '#FFFFFF', marginBottom: '0.5rem', fontWeight: '500' }}>Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                placeholder="Enter your password"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.875rem',
-                                    background: 'rgba(13, 26, 51, 0.8)',
-                                    border: '1px solid rgba(26, 115, 232, 0.3)',
-                                    borderRadius: '8px',
-                                    color: '#FFFFFF',
-                                    fontSize: '1rem',
-                                    transition: 'all 0.3s ease',
-                                    backdropFilter: 'blur(10px)'
-                                }}
-                            />
-                        </div>
-
-                        <div>
-                            <label style={{ display: 'block', color: '#FFFFFF', marginBottom: '0.75rem', fontWeight: '500' }}>Login as</label>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF', cursor: 'pointer' }}>
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="student"
-                                        checked={role === 'student'}
-                                        onChange={(e) => setRole(e.target.value)}
-                                        style={{ accentColor: '#1A73E8' }}
-                                    />
-                                    Student
-                                </label>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF', cursor: 'pointer' }}>
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="mentor"
-                                        checked={role === 'mentor'}
-                                        onChange={(e) => setRole(e.target.value)}
-                                        style={{ accentColor: '#1A73E8' }}
-                                    />
-                                    Teacher
-                                </label>
-                            </div>
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            style={{
-                                width: '100%',
-                                padding: '1rem',
-                                fontSize: '1.1rem',
-                                background: loading ? 'rgba(26, 115, 232, 0.5)' : 'linear-gradient(45deg, #1A73E8, #28A8E0)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '8px',
-                                fontWeight: 'bold',
-                                cursor: loading ? 'not-allowed' : 'pointer',
-                                boxShadow: loading ? 'none' : '0 8px 25px rgba(26, 115, 232, 0.4)',
-                                transition: 'all 0.3s ease',
-                                transform: 'translateY(0)',
-                                marginTop: '0.5rem'
-                            }}
-                        >
-                            {loading ? 'Signing in...' : 'Sign In'}
-                        </button>
-                    </form>
-
-                    <p style={{ textAlign: 'center', marginTop: '2rem', color: '#6B7280' }}>
-                        Don't have an account?{' '}
-                        <Link to="/register" style={{ color: '#1A73E8', textDecoration: 'none', fontWeight: '500' }}>
-                            Sign up
-                        </Link>
-                    </p>
-                </div>
+                <p className="auth-switch">
+                    Don&apos;t have an account? <Link to="/register">Create one</Link>
+                </p>
             </div>
-            
-            <style jsx>{`
-                input:focus {
-                    outline: none;
-                    border-color: #1A73E8 !important;
-                    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1) !important;
-                }
-                
-                button:hover:not(:disabled) {
-                    transform: translateY(-2px) !important;
-                    box-shadow: 0 12px 35px rgba(26, 115, 232, 0.5) !important;
-                }
-            `}</style>
         </div>
     );
 };
