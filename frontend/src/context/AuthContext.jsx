@@ -1,15 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { authAPI } from '../utils/api';
-
-const AuthContext = createContext();
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within AuthProvider');
-    }
-    return context;
-};
+import { AuthContext } from './auth-context';
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -21,7 +12,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const response = await authAPI.getMe();
                 setUser(response.data);
-            } catch (err) {
+            } catch {
                 setUser(null);
                 localStorage.removeItem('token');
             } finally {
