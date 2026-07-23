@@ -9,6 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { palette, cfRankColors, baseCartesianOptions } from '../styles/chartTheme';
 
 ChartJS.register(
     CategoryScale,
@@ -19,19 +20,26 @@ ChartJS.register(
     Legend
 );
 
+// Two buckets per rank band, ascending with difficulty
+const RANK_RAMP = [
+    cfRankColors.pupil, cfRankColors.pupil,
+    cfRankColors.specialist, cfRankColors.specialist,
+    cfRankColors.expert, cfRankColors.expert,
+    cfRankColors.candidateMaster, cfRankColors.candidateMaster,
+    cfRankColors.grandmaster, cfRankColors.grandmaster
+];
+
 const ProblemsSolvedByRatingBarChart = ({ submissions }) => {
     if (!submissions || submissions.length === 0) {
         return (
-            <div style={{ 
-                background: 'rgba(255, 255, 255, 0.1)', 
-                padding: '2rem', 
-                borderRadius: '12px', 
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                backdropFilter: 'blur(10px)',
-                textAlign: 'center'
-            }}>
-                <h3 style={{ color: 'white' }}>No submissions available</h3>
-            </div>
+            <section className="panel">
+                <div className="panel-header">
+                    <h3 className="card-title">Problems Solved by Rating</h3>
+                </div>
+                <div className="panel-body">
+                    <p className="muted">No submissions available.</p>
+                </div>
+            </section>
         );
     }
 
@@ -80,115 +88,50 @@ const ProblemsSolvedByRatingBarChart = ({ submissions }) => {
             {
                 label: 'Problems Solved',
                 data: Object.values(buckets),
-                backgroundColor: [
-                    'rgba(0, 128, 0, 0.8)',
-                    'rgba(0, 150, 0, 0.8)',
-                    'rgba(3, 168, 158, 0.8)',
-                    'rgba(3, 190, 180, 0.8)',
-                    'rgba(0, 0, 255, 0.8)',
-                    'rgba(0, 50, 255, 0.8)',
-                    'rgba(170, 0, 170, 0.8)',
-                    'rgba(200, 0, 200, 0.8)',
-                    'rgba(255, 0, 0, 0.8)',
-                    'rgba(255, 50, 50, 0.8)'
-                ],
-                borderColor: [
-                    'rgba(0, 128, 0, 1)',
-                    'rgba(0, 150, 0, 1)',
-                    'rgba(3, 168, 158, 1)',
-                    'rgba(3, 190, 180, 1)',
-                    'rgba(0, 0, 255, 1)',
-                    'rgba(0, 50, 255, 1)',
-                    'rgba(170, 0, 170, 1)',
-                    'rgba(200, 0, 200, 1)',
-                    'rgba(255, 0, 0, 1)',
-                    'rgba(255, 50, 50, 1)'
-                ],
+                // Buckets ascend by difficulty, two per Codeforces rank band
+                backgroundColor: RANK_RAMP.map((c) => `${c}cc`),
+                borderColor: RANK_RAMP,
                 borderWidth: 1,
-                hoverBackgroundColor: [
-                    'rgba(0, 128, 0, 1)',
-                    'rgba(0, 150, 0, 1)',
-                    'rgba(3, 168, 158, 1)',
-                    'rgba(3, 190, 180, 1)',
-                    'rgba(0, 0, 255, 1)',
-                    'rgba(0, 50, 255, 1)',
-                    'rgba(170, 0, 170, 1)',
-                    'rgba(200, 0, 200, 1)',
-                    'rgba(255, 0, 0, 1)',
-                    'rgba(255, 50, 50, 1)'
-                ]
+                hoverBackgroundColor: RANK_RAMP
             }
         ]
     };
 
     const options = {
-        responsive: true,
-        maintainAspectRatio: false,
+        ...baseCartesianOptions,
         plugins: {
-            legend: {
-                labels: {
-                    color: 'white'
-                }
-            },
+            ...baseCartesianOptions.plugins,
             tooltip: {
+                ...baseCartesianOptions.plugins.tooltip,
                 callbacks: {
-                    label: (context) => {
-                        const range = context.label;
-                        const count = context.parsed.y;
-                        return `${range}: ${count} problems`;
-                    }
+                    label: (context) => `${context.label}: ${context.parsed.y} problems`
                 }
             }
         },
         scales: {
             x: {
-                title: {
-                    display: true,
-                    text: 'Rating Range',
-                    color: 'white'
-                },
-                ticks: {
-                    color: 'white'
-                },
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                }
+                ...baseCartesianOptions.scales.x,
+                title: { display: true, text: 'Rating Range', color: palette.muted }
             },
             y: {
-                title: {
-                    display: true,
-                    text: 'Number of Problems',
-                    color: 'white'
-                },
-                ticks: {
-                    color: 'white',
-                    beginAtZero: true
-                },
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                }
+                ...baseCartesianOptions.scales.y,
+                title: { display: true, text: 'Number of Problems', color: palette.muted }
             }
         }
     };
 
     return (
-        <div style={{ 
-            background: 'rgba(255, 255, 255, 0.1)', 
-            padding: '2rem', 
-            borderRadius: '12px', 
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            backdropFilter: 'blur(10px)'
-        }}>
-            <h3 style={{ color: 'white', marginBottom: '1rem', textAlign: 'center' }}>
-                Problems Solved by Rating
-            </h3>
-            <p style={{ color: '#aaa', textAlign: 'center', marginBottom: '1rem' }}>
-                Total Rated Problems: {uniqueProblems.size}
-            </p>
-            <div style={{ height: '400px' }}>
-                <Bar data={data} options={options} />
+        <section className="panel">
+            <div className="panel-header">
+                <h3 className="card-title">Problems Solved by Rating</h3>
+                <span className="faint mono">{uniqueProblems.size} rated</span>
             </div>
-        </div>
+            <div className="panel-body">
+                <div style={{ height: '360px' }}>
+                    <Bar data={data} options={options} />
+                </div>
+            </div>
+        </section>
     );
 };
 
