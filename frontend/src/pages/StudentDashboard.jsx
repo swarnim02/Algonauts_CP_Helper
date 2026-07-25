@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { studentAPI } from '../utils/api';
 import CodeforcesDashboard from '../components/CodeforcesDashboard';
 
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const [recentContests, setRecentContests] = useState([]);
     const [upsolveQueue, setUpsolveQueue] = useState([]);
     const [statusMessage, setStatusMessage] = useState(null);
-    const [stats, setStats] = useState(null);
     const [upsolveStats, setUpsolveStats] = useState({
         contestGiven: 0,
         upsolveDone: 0,
@@ -18,7 +16,6 @@ const StudentDashboard = () => {
     });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('queue');
-    const [customContestId, setCustomContestId] = useState('');
     const [studentGroups, setStudentGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [selectedSet, setSelectedSet] = useState(null);
@@ -28,7 +25,6 @@ const StudentDashboard = () => {
     const [selectedContest, setSelectedContest] = useState(null);
     const [contestTab, setContestTab] = useState('');
     const [leaderboard, setLeaderboard] = useState([]);
-    const [cfHandle, setCfHandle] = useState('');
     const [cfLoading, setCfLoading] = useState(false);
     const [cfError, setCfError] = useState(null);
     const [userData, setUserData] = useState(null);
@@ -44,15 +40,10 @@ const StudentDashboard = () => {
 
     const fetchData = async () => {
         try {
-            const [queueRes, statsRes, recentRes] = await Promise.all([
-                studentAPI.getUpsolveQueue(),
-                studentAPI.getMyStats(),
-                studentAPI.getParticipatedContests()
-            ]);
-
+            // getMyStats/getParticipatedContests were fetched into state that
+            // nothing rendered, so only the queue is requested now.
+            const queueRes = await studentAPI.getUpsolveQueue();
             setUpsolveQueue(queueRes.data.queue || []);
-            setStats(statsRes.data);
-            setRecentContests(recentRes.data.contests || []);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -110,7 +101,7 @@ const StudentDashboard = () => {
             } else {
                 setCfError('User not found or invalid username');
             }
-        } catch (error) {
+        } catch {
             setCfError('Failed to fetch data. Please try again.');
         } finally {
             setCfLoading(false);
@@ -186,22 +177,22 @@ const StudentDashboard = () => {
 
     return (
         <div style={{ 
-            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)', 
+            background: 'var(--grad-page)', 
             minHeight: '100vh',
             position: 'relative'
         }}>
             {/* Static Background Elements */}
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.1 }}>
-                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
-                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
-                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
             </div>
             
             <nav style={{
-                background: 'rgba(26, 35, 50, 0.9)',
+                background: 'var(--bg-panel)',
                 backdropFilter: 'blur(20px)',
                 border: 'none',
-                borderBottom: '1px solid rgba(26, 115, 232, 0.3)',
+                borderBottom: '1px solid var(--border-strong)',
                 padding: '1rem 2rem',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -211,10 +202,10 @@ const StudentDashboard = () => {
             }}>
                 <h2 style={{ 
                     margin: 0, 
-                    color: '#FFFFFF',
+                    color: 'var(--text)',
                     fontSize: '1.8rem',
                     fontWeight: 'bold',
-                    background: 'linear-gradient(45deg, #FFFFFF, #1A73E8)',
+                    background: 'var(--grad-text)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent'
                 }}>Algonauts</h2>
@@ -222,8 +213,8 @@ const StudentDashboard = () => {
                     <button 
                         onClick={() => setShowProfileMenu(!showProfileMenu)}
                         style={{
-                            background: 'rgba(255, 255, 255, 0.1)',
-                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            background: 'var(--glass)',
+                            border: '1px solid var(--glass-strong)',
                             color: 'white',
                             padding: '0.5rem 1rem',
                             borderRadius: '6px',
@@ -243,15 +234,15 @@ const StudentDashboard = () => {
                             top: '100%',
                             right: 0,
                             marginTop: '0.5rem',
-                            background: 'rgba(0, 0, 0, 0.9)',
-                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            background: 'var(--shadow-color)',
+                            border: '1px solid var(--glass-strong)',
                             borderRadius: '6px',
                             minWidth: '200px',
                             zIndex: 1000,
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+                            boxShadow: '0 4px 12px var(--shadow-color)'
                         }}>
                             <div style={{ padding: '0.5rem 0' }}>
-                                <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#aaa', fontSize: '0.9rem' }}>
+                                <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--glass)', color: 'var(--muted)', fontSize: '0.9rem' }}>
                                     {user?.email}
                                 </div>
                                 <button
@@ -266,7 +257,7 @@ const StudentDashboard = () => {
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease'
                                     }}
-                                    onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+                                    onMouseEnter={(e) => e.target.style.background = 'var(--glass)'}
                                     onMouseLeave={(e) => e.target.style.background = 'transparent'}
                                 >
                                     Logout
@@ -280,20 +271,20 @@ const StudentDashboard = () => {
             <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', position: 'relative', zIndex: 1 }}>
                 <aside style={{ 
                     width: '280px',
-                    background: 'rgba(26, 35, 50, 0.8)', 
+                    background: 'var(--bg-panel)', 
                     backdropFilter: 'blur(20px)',
-                    borderRight: '1px solid rgba(26, 115, 232, 0.3)',
+                    borderRight: '1px solid var(--border-strong)',
                     padding: '2rem 0'
                 }}>
                     <button
                         onClick={() => { setActiveTab('queue'); setSelectedContest(null); }}
                         style={{
-                            background: activeTab === 'queue' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
-                            borderLeft: activeTab === 'queue' ? '3px solid #1A73E8' : '3px solid transparent',
-                            color: activeTab === 'queue' ? '#FFFFFF' : '#6B7280',
+                            border: 'none',
+                            background: activeTab === 'queue' ? 'var(--primary-soft)' : 'transparent',
+                            borderLeft: activeTab === 'queue' ? '3px solid var(--primary)' : '3px solid transparent',
+                            color: activeTab === 'queue' ? 'var(--text)' : 'var(--muted)',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
-                            border: 'none',
                             cursor: 'pointer',
                             width: '100%',
                             transition: 'all 0.3s ease',
@@ -303,14 +294,14 @@ const StudentDashboard = () => {
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'queue') {
-                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
-                                e.target.style.color = '#FFFFFF';
+                                e.target.style.background = 'var(--primary-soft)';
+                                e.target.style.color = 'var(--text)';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'queue') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#6B7280';
+                                e.target.style.color = 'var(--muted)';
                             }
                         }}
                     >
@@ -319,12 +310,12 @@ const StudentDashboard = () => {
                     <button
                         onClick={() => { setActiveTab('groups'); setSelectedContest(null); }}
                         style={{
-                            background: activeTab === 'groups' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
-                            borderLeft: activeTab === 'groups' ? '3px solid #1A73E8' : '3px solid transparent',
-                            color: activeTab === 'groups' ? '#FFFFFF' : '#6B7280',
+                            border: 'none',
+                            background: activeTab === 'groups' ? 'var(--primary-soft)' : 'transparent',
+                            borderLeft: activeTab === 'groups' ? '3px solid var(--primary)' : '3px solid transparent',
+                            color: activeTab === 'groups' ? 'var(--text)' : 'var(--muted)',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
-                            border: 'none',
                             cursor: 'pointer',
                             width: '100%',
                             transition: 'all 0.3s ease',
@@ -334,14 +325,14 @@ const StudentDashboard = () => {
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'groups') {
-                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
-                                e.target.style.color = '#FFFFFF';
+                                e.target.style.background = 'var(--primary-soft)';
+                                e.target.style.color = 'var(--text)';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'groups') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#6B7280';
+                                e.target.style.color = 'var(--muted)';
                             }
                         }}
                     >
@@ -350,12 +341,12 @@ const StudentDashboard = () => {
                     <button
                         onClick={() => setActiveTab('contests')}
                         style={{
-                            background: activeTab === 'contests' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
-                            borderLeft: activeTab === 'contests' ? '3px solid #1A73E8' : '3px solid transparent',
-                            color: activeTab === 'contests' ? '#FFFFFF' : '#6B7280',
+                            border: 'none',
+                            background: activeTab === 'contests' ? 'var(--primary-soft)' : 'transparent',
+                            borderLeft: activeTab === 'contests' ? '3px solid var(--primary)' : '3px solid transparent',
+                            color: activeTab === 'contests' ? 'var(--text)' : 'var(--muted)',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
-                            border: 'none',
                             cursor: 'pointer',
                             width: '100%',
                             transition: 'all 0.3s ease',
@@ -365,14 +356,14 @@ const StudentDashboard = () => {
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'contests') {
-                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
-                                e.target.style.color = '#FFFFFF';
+                                e.target.style.background = 'var(--primary-soft)';
+                                e.target.style.color = 'var(--text)';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'contests') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#6B7280';
+                                e.target.style.color = 'var(--muted)';
                             }
                         }}
                     >
@@ -382,12 +373,12 @@ const StudentDashboard = () => {
                     <button
                         onClick={() => setActiveTab('analytics')}
                         style={{
-                            background: activeTab === 'analytics' ? 'rgba(26, 115, 232, 0.2)' : 'transparent',
-                            borderLeft: activeTab === 'analytics' ? '3px solid #1A73E8' : '3px solid transparent',
-                            color: activeTab === 'analytics' ? '#FFFFFF' : '#6B7280',
+                            border: 'none',
+                            background: activeTab === 'analytics' ? 'var(--primary-soft)' : 'transparent',
+                            borderLeft: activeTab === 'analytics' ? '3px solid var(--primary)' : '3px solid transparent',
+                            color: activeTab === 'analytics' ? 'var(--text)' : 'var(--muted)',
                             padding: '1rem 1.5rem',
                             textAlign: 'left',
-                            border: 'none',
                             cursor: 'pointer',
                             width: '100%',
                             transition: 'all 0.3s ease',
@@ -397,14 +388,14 @@ const StudentDashboard = () => {
                         }}
                         onMouseEnter={(e) => {
                             if (activeTab !== 'analytics') {
-                                e.target.style.background = 'rgba(26, 115, 232, 0.1)';
-                                e.target.style.color = '#FFFFFF';
+                                e.target.style.background = 'var(--primary-soft)';
+                                e.target.style.color = 'var(--text)';
                             }
                         }}
                         onMouseLeave={(e) => {
                             if (activeTab !== 'analytics') {
                                 e.target.style.background = 'transparent';
-                                e.target.style.color = '#6B7280';
+                                e.target.style.color = 'var(--muted)';
                             }
                         }}
                     >
@@ -416,36 +407,36 @@ const StudentDashboard = () => {
                 <main style={{ 
                     flex: 1, 
                     padding: '2rem',
-                    background: 'rgba(13, 26, 51, 0.3)',
+                    background: 'var(--bg-input)',
                     backdropFilter: 'blur(10px)'
                 }}>
                     {activeTab === 'queue' && (
                         <div style={{
-                            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)',
+                            background: 'var(--grad-page)',
                             borderRadius: '20px',
                             padding: '2rem',
                             position: 'relative',
                             overflow: 'hidden',
-                            border: '1px solid rgba(26, 115, 232, 0.2)',
-                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                            border: '1px solid var(--primary-soft)',
+                            boxShadow: '0 20px 40px var(--shadow-color)'
                         }}>
                             {/* Background Elements - Exactly like MainHome */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
-                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
-                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
-                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #1A73E8 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
-                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #28A8E0 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
+                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
                             </div>
                             
                             {/* Pulsing Dots - Exactly like MainHome */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
-                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#1A73E8', borderRadius: '50%', top: '15%', left: '40%' }}></div>
-                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#28A8E0', borderRadius: '50%', top: '55%', left: '85%' }}></div>
-                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#1A73E8', borderRadius: '50%', top: '75%', left: '65%' }}></div>
+                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: 'var(--primary)', borderRadius: '50%', top: '15%', left: '40%' }}></div>
+                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: 'var(--accent)', borderRadius: '50%', top: '55%', left: '85%' }}></div>
+                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: 'var(--primary)', borderRadius: '50%', top: '75%', left: '65%' }}></div>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', position: 'relative', zIndex: 1 }}>
                                 <h2 style={{ 
-                                    color: '#FFFFFF',
+                                    color: 'var(--text)',
                                     fontSize: '2.5rem',
                                     fontWeight: '900',
                                     margin: 0
@@ -455,10 +446,10 @@ const StudentDashboard = () => {
                                         id="fetch-status-btn"
                                         onClick={handleFetchStatus}
                                         style={{ 
-                                            background: 'rgba(255, 255, 255, 0.1)', 
-                                            color: '#FFFFFF', 
+                                            background: 'var(--glass)', 
+                                            color: 'var(--text)', 
                                             fontWeight: '700',
-                                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                                            border: '1px solid var(--glass-strong)',
                                             padding: '1rem 2rem',
                                             borderRadius: '15px',
                                             cursor: 'pointer',
@@ -476,38 +467,38 @@ const StudentDashboard = () => {
                                 <div style={{ 
                                     padding: '1.5rem', 
                                     textAlign: 'center',
-                                    background: 'rgba(26, 35, 50, 0.8)',
-                                    border: '1px solid rgba(26, 115, 232, 0.3)',
+                                    background: 'var(--bg-panel)',
+                                    border: '1px solid var(--border-strong)',
                                     borderRadius: '12px',
                                     backdropFilter: 'blur(20px)',
-                                    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)'
+                                    boxShadow: '0 8px 25px var(--shadow-color)'
                                 }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: '#6B7280', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Contests Given</h4>
-                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: '#FFFFFF' }}>{upsolveStats.contestGiven}</p>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--muted)', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Contests Given</h4>
+                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: 'var(--text)' }}>{upsolveStats.contestGiven}</p>
                                 </div>
                                 <div style={{ 
                                     padding: '1.5rem', 
                                     textAlign: 'center', 
-                                    background: 'rgba(26, 35, 50, 0.8)',
-                                    border: '1px solid rgba(34, 197, 94, 0.4)',
+                                    background: 'var(--bg-panel)',
+                                    border: '1px solid var(--success-soft)',
                                     borderRadius: '12px',
                                     backdropFilter: 'blur(20px)',
-                                    boxShadow: '0 8px 25px rgba(34, 197, 94, 0.1)'
+                                    boxShadow: '0 8px 25px var(--success-soft)'
                                 }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: '#6B7280', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Upsolve Done</h4>
-                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: '#22C55E' }}>{upsolveStats.upsolveDone}</p>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--muted)', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Upsolve Done</h4>
+                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: 'var(--success)' }}>{upsolveStats.upsolveDone}</p>
                                 </div>
                                 <div style={{ 
                                     padding: '1.5rem', 
                                     textAlign: 'center', 
-                                    background: 'rgba(26, 35, 50, 0.8)',
-                                    border: '1px solid rgba(251, 146, 60, 0.4)',
+                                    background: 'var(--bg-panel)',
+                                    border: '1px solid var(--warning-soft)',
                                     borderRadius: '12px',
                                     backdropFilter: 'blur(20px)',
-                                    boxShadow: '0 8px 25px rgba(251, 146, 60, 0.1)'
+                                    boxShadow: '0 8px 25px var(--warning-soft)'
                                 }}>
-                                    <h4 style={{ fontSize: '0.9rem', color: '#6B7280', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Upsolve Pending</h4>
-                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: '#FB923C' }}>{upsolveStats.upsolvePending}</p>
+                                    <h4 style={{ fontSize: '0.9rem', color: 'var(--muted)', margin: '0 0 0.5rem 0', fontWeight: '500' }}>Upsolve Pending</h4>
+                                    <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0', color: 'var(--warning)' }}>{upsolveStats.upsolvePending}</p>
                                 </div>
                             </div>
 
@@ -516,9 +507,9 @@ const StudentDashboard = () => {
                                     padding: '1rem',
                                     margin: '1rem 0',
                                     borderRadius: '8px',
-                                    background: statusMessage.type === 'error' ? 'rgba(239, 68, 68, 0.1)' : (statusMessage.type === 'info' ? 'rgba(26, 115, 232, 0.1)' : 'rgba(34, 197, 94, 0.1)'),
-                                    border: statusMessage.type === 'error' ? '1px solid rgba(239, 68, 68, 0.3)' : (statusMessage.type === 'info' ? '1px solid rgba(26, 115, 232, 0.3)' : '1px solid rgba(34, 197, 94, 0.3)'),
-                                    color: statusMessage.type === 'error' ? '#FCA5A5' : (statusMessage.type === 'info' ? '#93C5FD' : '#86EFAC'),
+                                    background: statusMessage.type === 'error' ? 'var(--danger-soft)' : (statusMessage.type === 'info' ? 'var(--primary-soft)' : 'var(--success-soft)'),
+                                    border: statusMessage.type === 'error' ? '1px solid var(--danger-soft)' : (statusMessage.type === 'info' ? '1px solid var(--border-strong)' : '1px solid var(--success-soft)'),
+                                    color: statusMessage.type === 'error' ? 'var(--danger)' : (statusMessage.type === 'info' ? 'var(--info)' : 'var(--success)'),
                                     fontSize: '0.9rem',
                                     backdropFilter: 'blur(10px)'
                                 }}>
@@ -530,37 +521,37 @@ const StudentDashboard = () => {
                                 <div style={{ 
                                     textAlign: 'center', 
                                     padding: '3rem', 
-                                    background: 'rgba(26, 35, 50, 0.6)', 
+                                    background: 'var(--bg-panel)', 
                                     borderRadius: '16px',
-                                    border: '1px solid rgba(26, 115, 232, 0.2)',
+                                    border: '1px solid var(--primary-soft)',
                                     backdropFilter: 'blur(20px)'
                                 }}>
-                                    <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>All caught up!</h3>
-                                    <p style={{ color: '#6B7280', margin: 0 }}>No pending problems in your queue. Click "Fetch Current Status" to sync with Codeforces.</p>
+                                    <h3 style={{ color: 'var(--text)', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>All caught up!</h3>
+                                    <p style={{ color: 'var(--muted)', margin: 0 }}>No pending problems in your queue. Click "Fetch Current Status" to sync with Codeforces.</p>
                                 </div>
                             ) : (
                                 <div>
                                     {upsolveQueue.map((item, index) => (
                                         <div key={item._id} style={{ 
-                                            background: 'rgba(26, 35, 50, 0.8)',
-                                            border: '1px solid rgba(26, 115, 232, 0.3)',
-                                            borderLeft: '4px solid #1A73E8',
+                                            background: 'var(--bg-panel)',
+                                            border: '1px solid var(--border-strong)',
+                                            borderLeft: '4px solid var(--primary)',
                                             borderRadius: '12px',
                                             padding: '1.5rem',
                                             marginBottom: '1rem',
                                             backdropFilter: 'blur(20px)',
-                                            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                            boxShadow: '0 4px 15px var(--shadow-color)',
                                             transition: 'all 0.3s ease'
                                         }}>
                                             <div>
-                                                <h3 style={{ margin: '0 0 1rem 0', color: '#FFFFFF', fontSize: '1.2rem' }}>
+                                                <h3 style={{ margin: '0 0 1rem 0', color: 'var(--text)', fontSize: '1.2rem' }}>
                                                     <a
                                                         href={item.link}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        style={{ color: '#FFFFFF', textDecoration: 'none', transition: 'color 0.3s ease' }}
-                                                        onMouseEnter={(e) => e.target.style.color = '#1A73E8'}
-                                                        onMouseLeave={(e) => e.target.style.color = '#FFFFFF'}
+                                                        style={{ color: 'var(--text)', textDecoration: 'none', transition: 'color 0.3s ease' }}
+                                                        onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
+                                                        onMouseLeave={(e) => e.target.style.color = 'var(--text)'}
                                                     >
                                                         #{index + 1} - {item.contestName} - {item.problemIndex}
                                                     </a>
@@ -569,9 +560,9 @@ const StudentDashboard = () => {
 
                                             {item.problemDetails && (
                                                 <div style={{ marginTop: '1rem' }}>
-                                                    <p style={{ margin: '0.5rem 0', color: '#FFFFFF' }}><strong>Name:</strong> <span style={{ color: '#6B7280' }}>{item.problemDetails.name}</span></p>
-                                                    <p style={{ margin: '0.5rem 0', color: '#FFFFFF' }}><strong>Rating:</strong> <span style={{ color: '#1A73E8', fontWeight: 'bold' }}>{item.problemDetails.rating}</span></p>
-                                                    <p style={{ margin: '0.5rem 0', color: '#FFFFFF' }}><strong>Tags:</strong> <span style={{ color: '#6B7280' }}>{item.problemDetails.tags.join(', ') || 'None'}</span></p>
+                                                    <p style={{ margin: '0.5rem 0', color: 'var(--text)' }}><strong>Name:</strong> <span style={{ color: 'var(--muted)' }}>{item.problemDetails.name}</span></p>
+                                                    <p style={{ margin: '0.5rem 0', color: 'var(--text)' }}><strong>Rating:</strong> <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{item.problemDetails.rating}</span></p>
+                                                    <p style={{ margin: '0.5rem 0', color: 'var(--text)' }}><strong>Tags:</strong> <span style={{ color: 'var(--muted)' }}>{item.problemDetails.tags.join(', ') || 'None'}</span></p>
                                                 </div>
                                             )}
                                         </div>
@@ -583,62 +574,62 @@ const StudentDashboard = () => {
 
                     {activeTab === 'groups' && (
                         <div style={{
-                            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)',
+                            background: 'var(--grad-page)',
                             borderRadius: '20px',
                             padding: '2rem',
                             position: 'relative',
                             overflow: 'hidden',
-                            border: '1px solid rgba(26, 115, 232, 0.2)',
-                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                            border: '1px solid var(--primary-soft)',
+                            boxShadow: '0 20px 40px var(--shadow-color)'
                         }}>
                             {/* Background Elements - Gray theme only */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
-                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #6B7280 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
-                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #9CA3AF 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
-                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #6B7280 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
-                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #9CA3AF 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
+                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, var(--muted) 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, var(--muted) 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, var(--muted) 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, var(--muted) 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
                             </div>
                             
                             {/* Pulsing Dots - Gray only */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
-                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#6B7280', borderRadius: '50%', top: '15%', left: '40%' }}></div>
-                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#9CA3AF', borderRadius: '50%', top: '55%', left: '85%' }}></div>
-                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#6B7280', borderRadius: '50%', top: '75%', left: '65%' }}></div>
+                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: 'var(--muted)', borderRadius: '50%', top: '15%', left: '40%' }}></div>
+                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: 'var(--muted)', borderRadius: '50%', top: '55%', left: '85%' }}></div>
+                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: 'var(--muted)', borderRadius: '50%', top: '75%', left: '65%' }}></div>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', position: 'relative', zIndex: 1 }}>
                                 <h2 style={{ 
-                                    color: '#FFFFFF',
+                                    color: 'var(--text)',
                                     fontSize: '2.5rem',
                                     fontWeight: '900',
                                     margin: 0
                                 }}>Collaborative Groups</h2>
                                 <span style={{ 
-                                    background: studentGroups.length > 0 ? 'rgba(107, 114, 128, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
-                                    color: studentGroups.length > 0 ? '#9CA3AF' : '#FCA5A5', 
+                                    background: studentGroups.length > 0 ? 'var(--border-strong)' : 'var(--danger-soft)', 
+                                    color: studentGroups.length > 0 ? 'var(--muted)' : 'var(--danger)', 
                                     padding: '0.5rem 1rem', 
                                     fontWeight: '700',
                                     borderRadius: '8px',
-                                    border: studentGroups.length > 0 ? '1px solid rgba(107, 114, 128, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+                                    border: studentGroups.length > 0 ? '1px solid var(--border-strong)' : '1px solid var(--danger-soft)',
                                     backdropFilter: 'blur(10px)'
                                 }}>
                                     {studentGroups.length} {studentGroups.length === 1 ? 'Group' : 'Groups'} assigned
                                 </span>
                             </div>
-                            <p style={{ color: '#6B7280', marginBottom: '20px', position: 'relative', zIndex: 1 }}>Problems assigned to you across all your collaborative groups.</p>
+                            <p style={{ color: 'var(--muted)', marginBottom: '20px', position: 'relative', zIndex: 1 }}>Problems assigned to you across all your collaborative groups.</p>
 
                             {studentGroups.length === 0 ? (
                                 <div style={{ 
                                     textAlign: 'center', 
                                     padding: '3rem', 
-                                    background: 'rgba(26, 35, 50, 0.6)', 
+                                    background: 'var(--bg-panel)', 
                                     borderRadius: '16px',
-                                    border: '1px solid rgba(26, 115, 232, 0.2)',
+                                    border: '1px solid var(--primary-soft)',
                                     backdropFilter: 'blur(20px)',
                                     position: 'relative',
                                     zIndex: 1
                                 }}>
-                                    <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>You haven't been added to any group yet.</h3>
-                                    <p style={{ color: '#6B7280', margin: 0 }}>Ask your mentor to add your email ({user?.email}) to a group.</p>
+                                    <h3 style={{ color: 'var(--text)', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>You haven't been added to any group yet.</h3>
+                                    <p style={{ color: 'var(--muted)', margin: 0 }}>Ask your mentor to add your email ({user?.email}) to a group.</p>
                                 </div>
                             ) : (
                                 <div style={{ position: 'relative', zIndex: 1 }}>
@@ -650,21 +641,21 @@ const StudentDashboard = () => {
                                                     style={{ 
                                                         cursor: 'pointer', 
                                                         marginBottom: '1rem', 
-                                                        background: 'rgba(55, 65, 81, 0.8)',
-                                                        border: '1px solid rgba(107, 114, 128, 0.3)',
-                                                        borderLeft: '4px solid #6B7280',
+                                                        background: 'var(--bg-elevated)',
+                                                        border: '1px solid var(--border-strong)',
+                                                        borderLeft: '4px solid var(--muted)',
                                                         borderRadius: '12px',
                                                         padding: '1.5rem',
                                                         backdropFilter: 'blur(20px)',
-                                                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                                        boxShadow: '0 4px 15px var(--shadow-color)',
                                                         transition: 'all 0.3s ease'
                                                     }}
                                                     onClick={() => setSelectedGroup(group)}
                                                     onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
                                                     onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                                                 >
-                                                    <h3 style={{ margin: 0, color: '#FFFFFF', fontSize: '1.2rem' }}>{group.groupName}</h3>
-                                                    <p style={{ margin: '0.5rem 0 0 0', color: '#6B7280' }}>
+                                                    <h3 style={{ margin: 0, color: 'var(--text)', fontSize: '1.2rem' }}>{group.groupName}</h3>
+                                                    <p style={{ margin: '0.5rem 0 0 0', color: 'var(--muted)' }}>
                                                         {group.sets.length} problem sets
                                                     </p>
                                                 </div>
@@ -684,7 +675,7 @@ const StudentDashboard = () => {
                                             </div>
 
                                             {selectedGroup.sets.length === 0 ? (
-                                                <p style={{ color: '#666', fontStyle: 'italic' }}>No problem sets assigned yet in this group.</p>
+                                                <p style={{ color: 'var(--muted)', fontStyle: 'italic' }}>No problem sets assigned yet in this group.</p>
                                             ) : (
                                                 <div className="sets-list">
                                                     {selectedGroup.sets.map(set => (
@@ -695,7 +686,7 @@ const StudentDashboard = () => {
                                                             onClick={() => setSelectedSet(set)}
                                                         >
                                                             <h4 style={{ margin: 0, color: 'white' }}>{set.setName}</h4>
-                                                            <p style={{ margin: '0.5rem 0 0 0', color: '#666' }}>
+                                                            <p style={{ margin: '0.5rem 0 0 0', color: 'var(--muted)' }}>
                                                                 {set.problems.length} problems
                                                             </p>
                                                         </div>
@@ -717,41 +708,41 @@ const StudentDashboard = () => {
                                             </div>
 
                                             <div style={{ 
-                                                background: 'rgba(255, 255, 255, 0.1)',
-                                                border: '1px solid rgba(255, 255, 255, 0.2)',
+                                                background: 'var(--glass)',
+                                                border: '1px solid var(--glass-strong)',
                                                 borderRadius: '8px',
                                                 backdropFilter: 'blur(10px)',
                                                 overflow: 'hidden'
                                             }}>
                                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                     <thead>
-                                                        <tr style={{ background: 'rgba(0, 0, 0, 0.3)' }}>
-                                                            <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Problem</th>
-                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Platform</th>
-                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Status</th>
-                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Actions</th>
+                                                        <tr style={{ background: 'var(--bg-elevated)' }}>
+                                                            <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Problem</th>
+                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Platform</th>
+                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Status</th>
+                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {selectedSet.problems.map(problem => (
-                                                            <tr key={problem._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                                                            <tr key={problem._id} style={{ borderBottom: '1px solid var(--glass)' }}>
                                                                 <td style={{ padding: '1rem', color: 'white' }}>
                                                                     <div>
                                                                         <div style={{ fontWeight: 'bold' }}>{problem.title}</div>
                                                                         {problem.status === 'Solved' && (
-                                                                            <div style={{ fontSize: '0.8rem', color: '#aaa', marginTop: '5px' }}>
+                                                                            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '5px' }}>
                                                                                 Time: {problem.timeTaken} | {new Date(problem.solvedAt).toLocaleDateString()}
-                                                                                {problem.learnings && <div style={{ color: '#ddd' }}>Learnings: {problem.learnings}</div>}
+                                                                                {problem.learnings && <div style={{ color: 'var(--text-2)' }}>Learnings: {problem.learnings}</div>}
                                                                             </div>
                                                                         )}
                                                                     </div>
                                                                 </td>
-                                                                <td style={{ padding: '1rem', textAlign: 'center', color: '#e67e22', fontWeight: 'bold' }}>{problem.platform}</td>
+                                                                <td style={{ padding: '1rem', textAlign: 'center', color: 'var(--warning)', fontWeight: 'bold' }}>{problem.platform}</td>
                                                                 <td style={{ padding: '1rem', textAlign: 'center' }}>
                                                                     {problem.status === 'Solved' ? (
-                                                                        <span className="status-badge solved" style={{ color: '#2ecc71', fontWeight: 'bold' }}>Solved</span>
+                                                                        <span className="status-badge solved" style={{ color: 'var(--success)', fontWeight: 'bold' }}>Solved</span>
                                                                     ) : (
-                                                                        <span style={{ color: '#e67e22', fontWeight: 'bold' }}>Pending</span>
+                                                                        <span style={{ color: 'var(--warning)', fontWeight: 'bold' }}>Pending</span>
                                                                     )}
                                                                 </td>
                                                                 <td style={{ padding: '1rem', textAlign: 'center' }}>
@@ -778,32 +769,32 @@ const StudentDashboard = () => {
 
                     {activeTab === 'contests' && (
                         <div style={{
-                            background: 'linear-gradient(135deg, #111111 0%, #0D1A33 100%)',
+                            background: 'var(--grad-page)',
                             borderRadius: '20px',
                             padding: '2rem',
                             position: 'relative',
                             overflow: 'hidden',
-                            border: '1px solid rgba(26, 115, 232, 0.2)',
-                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                            border: '1px solid var(--primary-soft)',
+                            boxShadow: '0 20px 40px var(--shadow-color)'
                         }}>
                             {/* Background Elements - Blue theme */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15 }}>
-                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
-                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
-                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
-                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
+                                <div style={{ position: 'absolute', width: '400px', height: '400px', background: 'radial-gradient(circle, var(--info) 0%, transparent 70%)', borderRadius: '50%', top: '5%', left: '5%' }}></div>
+                                <div style={{ position: 'absolute', width: '250px', height: '250px', background: 'radial-gradient(circle, var(--info) 0%, transparent 70%)', borderRadius: '50%', top: '50%', right: '10%' }}></div>
+                                <div style={{ position: 'absolute', width: '180px', height: '180px', background: 'radial-gradient(circle, var(--info) 0%, transparent 70%)', borderRadius: '50%', bottom: '15%', left: '15%' }}></div>
+                                <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, var(--info) 0%, transparent 70%)', borderRadius: '50%', top: '30%', left: '60%' }}></div>
                             </div>
                             
                             {/* Pulsing Dots - Blue */}
                             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.3 }}>
-                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: '#3B82F6', borderRadius: '50%', top: '15%', left: '40%' }}></div>
-                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: '#60A5FA', borderRadius: '50%', top: '55%', left: '85%' }}></div>
-                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: '#3B82F6', borderRadius: '50%', top: '75%', left: '65%' }}></div>
+                                <div style={{ position: 'absolute', width: '12px', height: '12px', background: 'var(--info)', borderRadius: '50%', top: '15%', left: '40%' }}></div>
+                                <div style={{ position: 'absolute', width: '8px', height: '8px', background: 'var(--info)', borderRadius: '50%', top: '55%', left: '85%' }}></div>
+                                <div style={{ position: 'absolute', width: '10px', height: '10px', background: 'var(--info)', borderRadius: '50%', top: '75%', left: '65%' }}></div>
                             </div>
                             {!selectedContest ? (
                                 <div style={{ position: 'relative', zIndex: 1 }}>
                                     <h2 style={{ 
-                                        color: '#FFFFFF',
+                                        color: 'var(--text)',
                                         fontSize: '2.5rem',
                                         fontWeight: '900',
                                         margin: '0 0 20px 0'
@@ -814,9 +805,9 @@ const StudentDashboard = () => {
                                                 key={tab}
                                                 onClick={() => setContestTab(tab)}
                                                 style={{
-                                                    background: contestTab === tab ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                                                    color: contestTab === tab ? '#60A5FA' : '#FFFFFF',
-                                                    border: contestTab === tab ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid rgba(255, 255, 255, 0.2)',
+                                                    background: contestTab === tab ? 'var(--info-soft)' : 'var(--glass)',
+                                                    color: contestTab === tab ? 'var(--info)' : 'var(--text)',
+                                                    border: contestTab === tab ? '1px solid var(--info-soft)' : '1px solid var(--glass-strong)',
                                                     padding: '0.75rem 1.5rem',
                                                     borderRadius: '8px',
                                                     cursor: 'pointer',
@@ -842,13 +833,13 @@ const StudentDashboard = () => {
                                         <div style={{ 
                                             textAlign: 'center', 
                                             padding: '3rem', 
-                                            background: 'rgba(26, 35, 50, 0.6)', 
+                                            background: 'var(--bg-panel)', 
                                             borderRadius: '16px',
-                                            border: '1px solid rgba(59, 130, 246, 0.2)',
+                                            border: '1px solid var(--info-soft)',
                                             backdropFilter: 'blur(20px)'
                                         }}>
-                                            <h3 style={{ color: '#FFFFFF', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>No {contestTab} contests</h3>
-                                            <p style={{ color: '#6B7280', margin: 0 }}>Check back later for new contests.</p>
+                                            <h3 style={{ color: 'var(--text)', fontSize: '1.5rem', margin: '0 0 1rem 0' }}>No {contestTab} contests</h3>
+                                            <p style={{ color: 'var(--muted)', margin: 0 }}>Check back later for new contests.</p>
                                         </div>
                                     ) : (
                                         <div>
@@ -862,21 +853,21 @@ const StudentDashboard = () => {
                                                 return false;
                                             }).map(contest => (
                                                 <div key={contest._id} style={{ 
-                                                    background: 'rgba(55, 65, 81, 0.8)',
-                                                    border: '1px solid rgba(59, 130, 246, 0.3)',
-                                                    borderLeft: '4px solid #3B82F6',
+                                                    background: 'var(--bg-elevated)',
+                                                    border: '1px solid var(--info-soft)',
+                                                    borderLeft: '4px solid var(--info)',
                                                     borderRadius: '12px',
                                                     padding: '1.5rem',
                                                     marginBottom: '1rem',
                                                     backdropFilter: 'blur(20px)',
-                                                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                                    boxShadow: '0 4px 15px var(--shadow-color)',
                                                     transition: 'all 0.3s ease'
                                                 }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                                         <div style={{ flex: 1 }}>
-                                                            <h3 style={{ margin: 0, color: '#FFFFFF', fontSize: '1.2rem' }}>{contest.title}</h3>
-                                                            <p style={{ margin: '0.5rem 0', color: '#6B7280' }}>{contest.description}</p>
-                                                            <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem', fontSize: '0.9rem', color: '#6B7280' }}>
+                                                            <h3 style={{ margin: 0, color: 'var(--text)', fontSize: '1.2rem' }}>{contest.title}</h3>
+                                                            <p style={{ margin: '0.5rem 0', color: 'var(--muted)' }}>{contest.description}</p>
+                                                            <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem', fontSize: '0.9rem', color: 'var(--muted)' }}>
                                                                 <span>Start: {new Date(contest.startTime).toLocaleString()}</span>
                                                                 <span>End: {new Date(contest.endTime).toLocaleString()}</span>
                                                                 <span>{contest.problems.length} problems</span>
@@ -923,41 +914,41 @@ const StudentDashboard = () => {
                                         Back to Contests
                                     </button>
                                     <h2 style={{ color: 'white', marginBottom: '1rem' }}>{selectedContest.title}</h2>
-                                    <p style={{ color: '#aaa', marginBottom: '1rem' }}>{selectedContest.description}</p>
-                                    <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', fontSize: '0.9rem', color: '#666' }}>
+                                    <p style={{ color: 'var(--muted)', marginBottom: '1rem' }}>{selectedContest.description}</p>
+                                    <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', fontSize: '0.9rem', color: 'var(--muted)' }}>
                                         <span>Start: {new Date(selectedContest.startTime).toLocaleString()}</span>
                                         <span>End: {new Date(selectedContest.endTime).toLocaleString()}</span>
                                     </div>
                                     
                                     {new Date(selectedContest.startTime) > new Date() ? (
-                                        <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                                        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)' }}>
                                             Contest will be available at start time
                                         </div>
                                     ) : (
                                         <div>
                                             <h3 style={{ color: 'white', marginBottom: '1rem' }}>Problems</h3>
                                             <div style={{ 
-                                                background: 'rgba(255, 255, 255, 0.1)',
-                                                border: '1px solid rgba(255, 255, 255, 0.2)',
+                                                background: 'var(--glass)',
+                                                border: '1px solid var(--glass-strong)',
                                                 borderRadius: '8px',
                                                 backdropFilter: 'blur(10px)',
                                                 overflow: 'hidden'
                                             }}>
                                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                     <thead>
-                                                        <tr style={{ background: 'rgba(0, 0, 0, 0.3)' }}>
-                                                            <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Order</th>
-                                                            <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Title</th>
-                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Platform</th>
-                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Action</th>
+                                                        <tr style={{ background: 'var(--bg-elevated)' }}>
+                                                            <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Order</th>
+                                                            <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Title</th>
+                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Platform</th>
+                                                            <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {selectedContest.problems.map((problem, index) => (
-                                                            <tr key={problem._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                                                            <tr key={problem._id} style={{ borderBottom: '1px solid var(--glass)' }}>
                                                                 <td style={{ padding: '1rem', color: 'white', fontWeight: 'bold' }}>{index + 1}</td>
                                                                 <td style={{ padding: '1rem', color: 'white' }}>{problem.title}</td>
-                                                                <td style={{ padding: '1rem', textAlign: 'center', color: '#e67e22', fontWeight: 'bold' }}>{problem.platform}</td>
+                                                                <td style={{ padding: '1rem', textAlign: 'center', color: 'var(--warning)', fontWeight: 'bold' }}>{problem.platform}</td>
                                                                 <td style={{ padding: '1rem', textAlign: 'center' }}>
                                                                     <a href={problem.link} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm">
                                                                         Open Problem
@@ -973,28 +964,28 @@ const StudentDashboard = () => {
                                                 <div style={{ marginTop: '2rem' }}>
                                                     <h3 style={{ color: 'white', marginBottom: '1rem' }}>Live Leaderboard</h3>
                                                     <div style={{ 
-                                                        background: 'rgba(255, 255, 255, 0.1)',
-                                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                                        background: 'var(--glass)',
+                                                        border: '1px solid var(--glass-strong)',
                                                         borderRadius: '8px',
                                                         backdropFilter: 'blur(10px)',
                                                         overflow: 'hidden'
                                                     }}>
                                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                             <thead>
-                                                                <tr style={{ background: 'rgba(0, 0, 0, 0.3)' }}>
-                                                                    <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Rank</th>
-                                                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Name</th>
-                                                                    <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Solved</th>
-                                                                    <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>Score</th>
+                                                                <tr style={{ background: 'var(--bg-elevated)' }}>
+                                                                    <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Rank</th>
+                                                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Name</th>
+                                                                    <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Solved</th>
+                                                                    <th style={{ padding: '1rem', textAlign: 'center', color: 'white', borderBottom: '1px solid var(--glass-strong)' }}>Score</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 {leaderboard.map((participant, index) => (
-                                                                    <tr key={participant.email} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                                                                    <tr key={participant.email} style={{ borderBottom: '1px solid var(--glass)' }}>
                                                                         <td style={{ padding: '1rem', textAlign: 'center', color: 'white', fontWeight: 'bold' }}>{index + 1}</td>
                                                                         <td style={{ padding: '1rem', color: 'white' }}>{participant.name}</td>
-                                                                        <td style={{ padding: '1rem', textAlign: 'center', color: '#2ecc71', fontWeight: 'bold' }}>{participant.solved}</td>
-                                                                        <td style={{ padding: '1rem', textAlign: 'center', color: '#3498db', fontWeight: 'bold' }}>{participant.score}</td>
+                                                                        <td style={{ padding: '1rem', textAlign: 'center', color: 'var(--success)', fontWeight: 'bold' }}>{participant.solved}</td>
+                                                                        <td style={{ padding: '1rem', textAlign: 'center', color: 'var(--info)', fontWeight: 'bold' }}>{participant.score}</td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
@@ -1010,9 +1001,7 @@ const StudentDashboard = () => {
                     )}
 
                     {activeTab === 'analytics' && (
-                        <CodeforcesDashboard 
-                            cfHandle={cfHandle}
-                            setCfHandle={setCfHandle}
+                        <CodeforcesDashboard
                             cfLoading={cfLoading}
                             cfError={cfError}
                             userData={userData}
@@ -1026,17 +1015,17 @@ const StudentDashboard = () => {
 
             {/* Solve Modal */}
             {solveModal.show && (
-                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-                    <div className="modal-content animate-pop-in" style={{ background: '#1a1a1a', padding: '30px', borderRadius: '15px', width: '90%', maxWidth: '500px', border: '1px solid #333' }}>
+                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--shadow-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div className="modal-content animate-pop-in" style={{ background: 'var(--bg-elevated)', padding: '30px', borderRadius: '15px', width: '90%', maxWidth: '500px', border: '1px solid var(--border-strong)' }}>
                         <h3 style={{ color: 'white' }}>Mark as Solved: {solveModal.problem?.title}</h3>
                         <form onSubmit={handleSolveSubmit} className="form" style={{ marginTop: '20px' }}>
                             <div className="form-group">
-                                <label style={{ color: '#ccc' }}>How long did it take?</label>
+                                <label style={{ color: 'var(--text-2)' }}>How long did it take?</label>
                                 <select
                                     className="form-control"
                                     value={solveModal.timeTaken}
                                     onChange={e => setSolveModal({ ...solveModal, timeTaken: e.target.value })}
-                                    style={{ width: '100%', padding: '10px', background: '#222', color: '#fff', border: '1px solid #444', borderRadius: '5px' }}
+                                    style={{ width: '100%', padding: '10px', background: 'var(--bg-elevated)', color: 'var(--text)', border: '1px solid var(--border-strong)', borderRadius: '5px' }}
                                 >
                                     <option value="<20min">Less than 20 minutes</option>
                                     <option value="<30min">Less than 30 minutes</option>
@@ -1045,19 +1034,19 @@ const StudentDashboard = () => {
                                 </select>
                             </div>
                             <div className="form-group" style={{ marginTop: '20px' }}>
-                                <label style={{ color: '#ccc' }}>Short Learning/Note (Optional)</label>
+                                <label style={{ color: 'var(--text-2)' }}>Short Learning/Note (Optional)</label>
                                 <textarea
                                     className="form-control"
                                     value={solveModal.learnings}
                                     onChange={e => setSolveModal({ ...solveModal, learnings: e.target.value })}
                                     placeholder="What did you learn from this problem?"
                                     rows={4}
-                                    style={{ width: '100%', padding: '10px', background: '#222', color: '#fff', border: '1px solid #444', borderRadius: '5px' }}
+                                    style={{ width: '100%', padding: '10px', background: 'var(--bg-elevated)', color: 'var(--text)', border: '1px solid var(--border-strong)', borderRadius: '5px' }}
                                 />
-                                <small style={{ color: '#666' }}>Max 200 characters recommended.</small>
+                                <small style={{ color: 'var(--muted)' }}>Max 200 characters recommended.</small>
                             </div>
                             <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
-                                <button type="submit" className="btn btn-primary" style={{ flex: 1, background: 'white', color: '#000', fontWeight: 'bold' }}>Submit Solve</button>
+                                <button type="submit" className="btn btn-primary" style={{ flex: 1, background: 'white', color: 'var(--bg-deep)', fontWeight: 'bold' }}>Submit Solve</button>
                                 <button type="button" className="btn btn-secondary" onClick={() => setSolveModal({ ...solveModal, show: false })} style={{ flex: 1 }}>Cancel</button>
                             </div>
                         </form>
