@@ -13,10 +13,10 @@ const SolvedProblemsPieChart = ({ submissions }) => {
     if (!submissions || submissions.length === 0) {
         return (
             <div style={{ 
-                background: 'rgba(255, 255, 255, 0.1)', 
+                background: 'rgba(236, 253, 245, 0.07)', 
                 padding: '2rem', 
                 borderRadius: '12px', 
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid rgba(236, 253, 245, 0.12)',
                 backdropFilter: 'blur(10px)',
                 textAlign: 'center'
             }}>
@@ -62,24 +62,24 @@ const SolvedProblemsPieChart = ({ submissions }) => {
             {
                 data: Object.values(buckets),
                 backgroundColor: [
-                    '#808080',
-                    '#008000',
-                    '#03A89E',
-                    '#0000FF',
-                    '#AA00AA',
-                    '#FF0000'
+                    '#9aa4a0',
+                    '#7ddf64',
+                    '#5eead4',
+                    '#60a5fa',
+                    '#c084fc',
+                    '#f87171'
                 ],
-                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderColor: 'rgba(236, 253, 245, 0.12)',
                 borderWidth: 1,
                 hoverBackgroundColor: [
-                    '#909090',
-                    '#109010',
-                    '#13B8AE',
-                    '#1010FF',
-                    '#BA10BA',
+                    '#9aa4a0',
+                    '#7ddf64',
+                    '#5eead4',
+                    '#60a5fa',
+                    '#c084fc',
                     '#FF1010'
                 ],
-                hoverBorderColor: '#FFD700',
+                hoverBorderColor: '#fbbf24',
                 hoverBorderWidth: 3
             }
         ]
@@ -120,16 +120,16 @@ const SolvedProblemsPieChart = ({ submissions }) => {
 
     return (
         <div style={{ 
-            background: 'rgba(255, 255, 255, 0.1)', 
+            background: 'rgba(236, 253, 245, 0.07)', 
             padding: '2rem', 
             borderRadius: '12px', 
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(236, 253, 245, 0.12)',
             backdropFilter: 'blur(10px)'
         }}>
             <h3 style={{ color: 'white', marginBottom: '1rem', textAlign: 'center' }}>
                 Problems Solved by Difficulty
             </h3>
-            <p style={{ color: '#aaa', textAlign: 'center', marginBottom: '1rem' }}>
+            <p style={{ color: '#8aa39b', textAlign: 'center', marginBottom: '1rem' }}>
                 Total Unique Problems: {uniqueProblems.size}
             </p>
             <div style={{ height: '400px' }}>
