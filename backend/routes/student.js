@@ -18,6 +18,10 @@ const {
     getContestLeaderboard
 } = require('../controllers/studentController');
 const { protect, authorize } = require('../middleware/auth');
+const { validateParams } = require('../middleware/validateObjectId');
+
+// Reject malformed ids before they reach a controller or the database
+validateParams(router, 'contestId', 'problemId', 'problemStatusId');
 
 // All routes are protected and student-only
 router.use(protect);

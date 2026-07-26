@@ -16,6 +16,10 @@ const {
     getProblemSets
 } = require('../controllers/mentorController');
 const { protect, authorize } = require('../middleware/auth');
+const { validateParams } = require('../middleware/validateObjectId');
+
+// Reject malformed ids before they reach a controller or the database
+validateParams(router, 'groupId', 'contestId');
 
 // All routes are protected and mentor-only
 router.use(protect);
