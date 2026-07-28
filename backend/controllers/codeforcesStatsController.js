@@ -1,4 +1,7 @@
-const { getUserRatingHistory, getUserSubmissions, getContestList, getContestProblems } = require('../utils/codeforcesAPI');
+const { getUserRatingHistory, getUserSubmissions, getContestList, getUserInfo } = require('../utils/codeforcesAPI');
+
+// Codeforces handles: 3-24 chars, letters/digits/underscore/hyphen/period
+const HANDLE_RE = /^[A-Za-z0-9_.-]{3,24}$/;
 
 const analyzeCodeforcesStats = async (req, res) => {
     const { handle } = req.params;
@@ -6,6 +9,19 @@ const analyzeCodeforcesStats = async (req, res) => {
     try {
         if (!handle) {
             return res.status(400).json({ message: 'Codeforces handle is required' });
+        }
+
+        if (!HANDLE_RE.test(handle)) {
+            return res.status(400).json({ message: 'Invalid Codeforces handle format' });
+        }
+
+        // Without this check an unknown handle looks identical to a real user
+        // who has never competed - both would report zeroes.
+        const info = await getUserInfo(handle);
+        if (!info.found) {
+            return res
+                .status(info.transport ? 502 : 404)
+                .json({ message: info.transport ? 'Could not reach Codeforces, try again' : `No Codeforces user '${handle}'` });
         }
 
         // Fetch all required data
