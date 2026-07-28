@@ -117,6 +117,30 @@ module.exports = {
     validateProblemLink,
     
     /**
+     * Look up a user, distinguishing "not found" from "no activity".
+     * @param {string} handle
+     * @returns {Promise<{found: boolean, user?: Object, error?: string}>}
+     */
+    async getUserInfo(handle) {
+        try {
+            const response = await axios.get(`${CF_API_BASE}/user.info?handles=${encodeURIComponent(handle)}`);
+            if (response.data.status === 'OK' && response.data.result?.length) {
+                return { found: true, user: response.data.result[0] };
+            }
+            return { found: false, error: response.data.comment || 'User not found' };
+        } catch (error) {
+            // A 400 from Codeforces means the handle does not exist; anything
+            // else is a transport problem the caller should surface differently.
+            const comment = error.response?.data?.comment;
+            if (error.response?.status === 400 && comment) {
+                return { found: false, error: comment };
+            }
+            console.error('CF User Info Error:', error.message);
+            return { found: false, error: 'Could not reach Codeforces', transport: true };
+        }
+    },
+
+    /**
      * Get User Submissions
      * @param {string} handle - Codeforces user handle
      * @returns {Promise<Array>} List of submissions
@@ -140,9 +164,31 @@ module.exports = {
      * @returns {Promise<Object>} { problems: [], name: "" }
      */
     async getContestProblems(contestId) {
+        const id = Number(contestId);
+
         try {
-            // Fetching standings with count=1 gives us the problem list cheaply
-            const response = await axios.get(`${CF_API_BASE}/contest.standings?contestId=${contestId}&from=1&count=1`);
+            // Codeforces rejects contest.standings when any extra parameter is
+            // sent ("available only via anonymous GET requests with no extra
+            // parameters"), and the unfiltered call returns every standings row
+            // just to read a problem list. Both cached datasets below already
+            // carry what we need, so the common path costs no extra request.
+            const [allProblems, contests] = await Promise.all([
+                module.exports.getAllProblems(),
+                module.exports.getContestList()
+            ]);
+
+            const problems = allProblems
+                .filter((p) => p.contestId === id)
+                .sort((a, b) => a.index.localeCompare(b.index, undefined, { numeric: true }));
+            const meta = contests.find((c) => c.id === id);
+
+            if (problems.length && meta) {
+                return { problems, name: meta.name };
+            }
+
+            // Contests absent from the public problemset (very new, or gym)
+            // still resolve through standings, called without extra params.
+            const response = await axios.get(`${CF_API_BASE}/contest.standings?contestId=${id}`);
             if (response.data.status === 'OK') {
                 return {
                     problems: response.data.result.problems,
