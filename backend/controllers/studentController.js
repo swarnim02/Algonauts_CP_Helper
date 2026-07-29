@@ -6,6 +6,7 @@ const GroupProblem = require('../models/GroupProblem');
 const GroupProblemStatus = require('../models/GroupProblemStatus');
 const ProblemSet = require('../models/ProblemSet');
 const { parseProblemLink, getProblemInfo, getUserSubmissions, getContestProblems, getUserRatingHistory, getAllProblems, getContestList } = require('../utils/codeforcesAPI');
+const { OBJECT_ID } = require('../middleware/validateObjectId');
 const fs = require('fs');
 const path = require('path');
 
@@ -142,14 +143,73 @@ const getUpsolveQueue = async (req, res) => {
  * @route   POST /api/student/smart-upsolve
  * @access  Private (Student only)
  */
+/**
+ * Queue the next unsolved problems from a Codeforces contest onto a user's
+ * upsolve list, extending the internal contest record as needed.
+ *
+ * Shared by smart-upsolve (an existing contest) and personal-contest tracking
+ * (a self-created one); the two differ only in how the contest is resolved.
+ *
+ * @returns {Promise<string[]>} the problem indices that were queued
+ */
+const queueUpsolveProblems = async ({ user, contest, cfContestId, allProblems, userSubmissions, limit }) => {
+    // Indices this user already solved on Codeforces for this contest.
+    // contestId comes back from Codeforces as a number, so compare as strings.
+    const solvedIndices = new Set(
+        userSubmissions
+            .filter((sub) => String(sub.contestId) === String(cfContestId) && sub.verdict === 'OK')
+            .map((sub) => sub.problem.index)
+    );
+
+    // One query for the whole contest rather than one per problem.
+    const queued = await ProblemStatus.find({ userId: user._id, contestId: contest._id }).select('problemIndex');
+    const alreadyQueued = new Set(queued.map((q) => q.problemIndex));
+
+    const recommendations = [];
+    for (const prob of allProblems) {
+        if (recommendations.length >= limit) break;
+        if (solvedIndices.has(prob.index) || alreadyQueued.has(prob.index)) continue;
+        recommendations.push(prob);
+    }
+
+    if (recommendations.length === 0) return [];
+
+    for (const prob of recommendations) {
+        if (!contest.problems.some((p) => p.order === prob.index)) {
+            contest.problems.push({
+                order: prob.index,
+                link: `https://codeforces.com/contest/${cfContestId}/problem/${prob.index}`
+            });
+        }
+    }
+
+    await ProblemStatus.insertMany(
+        recommendations.map((prob) => ({
+            userId: user._id,
+            contestId: contest._id,
+            problemIndex: prob.index,
+            status: 'Pending'
+        })),
+        { ordered: false }
+    );
+
+    await contest.save();
+    return recommendations.map((prob) => prob.index);
+};
+
 const recommendUpsolve = async (req, res) => {
     const { contestId, count } = req.body; // count: 1, 2, or 3
-    const numToAdd = Math.min(Math.max(parseInt(count) || 1, 1), 3); // Limit to 1-3
+    const limit = Math.min(Math.max(parseInt(count) || 1, 1), 3);
 
     try {
         const user = req.user;
         if (!user.codeforcesHandle) {
             return res.status(400).json({ message: 'Codeforces handle not set in profile' });
+        }
+
+        // This id arrives in the body, so router.param validation doesn't cover it
+        if (!OBJECT_ID.test(String(contestId || ''))) {
+            return res.status(400).json({ message: 'Invalid contestId' });
         }
 
         const contest = await Contest.findById(contestId);
@@ -168,81 +228,27 @@ const recommendUpsolve = async (req, res) => {
         }
         const cfContestId = parsed.contestId;
 
-        // Fetch Data from Codeforces
         const [contestData, userSubmissions] = await Promise.all([
             getContestProblems(cfContestId),
             getUserSubmissions(user.codeforcesHandle)
         ]);
-        
-        const allProblems = contestData.problems;
 
+        const allProblems = contestData.problems;
         if (!allProblems || !allProblems.length) {
             return res.status(500).json({ message: 'Failed to fetch contest problems from Codeforces' });
         }
 
-        // Identify Solved Problems
-        const solvedIndices = new Set();
-        userSubmissions.forEach(sub => {
-            if (sub.contestId == cfContestId && sub.verdict === 'OK') {
-                solvedIndices.add(sub.problem.index);
-            }
+        const added = await queueUpsolveProblems({
+            user, contest, cfContestId, allProblems, userSubmissions, limit
         });
 
-        // Identify Recommendations
-        // Problems in the contest (A, B, C...) that are NOT solved
-        const recommendations = [];
-        for (const prob of allProblems) {
-            if (recommendations.length >= numToAdd) break;
-            
-            if (!solvedIndices.has(prob.index)) {
-                // Also check if already in user's queue (Pending or Accepted in DB)
-                const existingStatus = await ProblemStatus.findOne({
-                    userId: user._id,
-                    contestId: contest._id,
-                    problemIndex: prob.index
-                });
-
-                if (!existingStatus) {
-                    recommendations.push(prob);
-                }
-            }
-        }
-
-        if (recommendations.length === 0) {
+        if (added.length === 0) {
             return res.status(200).json({ message: 'No new upsolve problems found (you mostly solved them all!)', added: [] });
         }
 
-        const addedProblems = [];
-
-        // Add to DB
-        for (const prob of recommendations) {
-            // 1. Ensure problem exists in Contest (extend contest if needed)
-            const problemLink = `https://codeforces.com/contest/${cfContestId}/problem/${prob.index}`;
-            const existingInContest = contest.problems.find(p => p.order === prob.index);
-
-            if (!existingInContest) {
-                contest.problems.push({
-                    order: prob.index,
-                    link: problemLink
-                });
-            }
-
-            // 2. Add to ProblemStatus
-            await ProblemStatus.create({
-                userId: user._id,
-                contestId: contest._id,
-                problemIndex: prob.index,
-                status: 'Pending'
-            });
-
-            addedProblems.push(prob.index);
-        }
-
-        await contest.save(); // Save any new problems to the contest schema
-
         res.status(200).json({
-            message: `Added ${addedProblems.length} problems to your upsolve queue`,
-            added: addedProblems
+            message: `Added ${added.length} problems to your upsolve queue`,
+            added
         });
 
     } catch (error) {
@@ -477,7 +483,7 @@ const bulkUpsolve = async (req, res) => {
  */
 const addPersonalContest = async (req, res) => {
     const { cfContestId, count } = req.body;
-    const numToAdd = Math.min(Math.max(parseInt(count) || 1, 1), 5); // Limit to 5
+    const limit = Math.min(Math.max(parseInt(count) || 1, 1), 5);
 
     try {
         const user = req.user;
@@ -485,12 +491,11 @@ const addPersonalContest = async (req, res) => {
             return res.status(400).json({ message: 'Codeforces handle not set in profile' });
         }
 
-        // Fetch Data from Codeforces
         const [contestData, userSubmissions] = await Promise.all([
             getContestProblems(cfContestId),
             getUserSubmissions(user.codeforcesHandle)
         ]);
-        
+
         const allProblems = contestData.problems;
         const contestName = contestData.name;
 
@@ -498,81 +503,23 @@ const addPersonalContest = async (req, res) => {
             return res.status(404).json({ message: 'Contest not found on Codeforces' });
         }
 
-        // Find or Create Internal Contest
-        // We look for a contest named like the CF one, owned by this user
-        let contest = await Contest.findOne({ 
-            mentorId: user._id,
-            contestName: contestName 
-        });
-
+        // A "personal" contest is one the student owns rather than a mentor.
+        let contest = await Contest.findOne({ mentorId: user._id, contestName });
         if (!contest) {
-            // Create "Personal" contest
-            contest = await Contest.create({
-                contestName: contestName,
-                mentorId: user._id,
-                problems: []
-            });
+            contest = await Contest.create({ contestName, mentorId: user._id, problems: [] });
         }
 
-        // Match Logic (Same as smart upsolve)
-        const solvedIndices = new Set();
-        userSubmissions.forEach(sub => {
-            if (sub.contestId == cfContestId && sub.verdict === 'OK') {
-                solvedIndices.add(sub.problem.index);
-            }
+        const added = await queueUpsolveProblems({
+            user, contest, cfContestId, allProblems, userSubmissions, limit
         });
 
-        const recommendations = [];
-        for (const prob of allProblems) {
-            if (recommendations.length >= numToAdd) break;
-            
-            if (!solvedIndices.has(prob.index)) {
-                // Check existance
-                const existingStatus = await ProblemStatus.findOne({
-                    userId: user._id,
-                    contestId: contest._id,
-                    problemIndex: prob.index
-                });
-
-                if (!existingStatus) {
-                    recommendations.push(prob);
-                }
-            }
-        }
-
-        if (recommendations.length === 0) {
+        if (added.length === 0) {
             return res.status(200).json({ message: 'No new problems to solve (completed or invalid)', added: [] });
         }
 
-        const addedProblems = [];
-
-        // Add to DB
-        for (const prob of recommendations) {
-            const problemLink = `https://codeforces.com/contest/${cfContestId}/problem/${prob.index}`;
-            const existingInContest = contest.problems.find(p => p.order === prob.index);
-
-            if (!existingInContest) {
-                contest.problems.push({
-                    order: prob.index,
-                    link: problemLink
-                });
-            }
-
-            await ProblemStatus.create({
-                userId: user._id,
-                contestId: contest._id,
-                problemIndex: prob.index,
-                status: 'Pending'
-            });
-
-            addedProblems.push(prob.index);
-        }
-
-        await contest.save();
-
         res.status(200).json({
-            message: `Created personal tracker for ${contestName} and added ${addedProblems.length} problems`,
-            added: addedProblems
+            message: `Created personal tracker for ${contestName} and added ${added.length} problems`,
+            added
         });
 
     } catch (error) {
@@ -580,7 +527,6 @@ const addPersonalContest = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 /**
  * @desc    Mark a problem as solved
